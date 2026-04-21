@@ -216,6 +216,7 @@ var CalendarWidget = (function () {
 
     var section = document.createElement('div');
     section.className = 'cw-flyers';
+    var sectionInDom = false;
 
     flyers.forEach(function (f, idx) {
       var card = document.createElement('div');
@@ -239,17 +240,21 @@ var CalendarWidget = (function () {
       var img = document.createElement('img');
       img.className = 'cw-flyer-img';
       img.alt = f.eventTitle || 'Flyer';
-      card.classList.add('cw-img-loading');
+
       loadImg(img, flyerSrcs(f), 12000,
-        function () { card.style.display = 'none'; },
-        function () { card.classList.remove('cw-img-loading'); }
+        function () { card.remove(); },
+        function () {
+          card.classList.add('cw-flyer-ready');
+          if (!sectionInDom) {
+            self.container.insertBefore(section, self.$list);
+            sectionInDom = true;
+          }
+        }
       );
 
       card.appendChild(img);
       section.appendChild(card);
     });
-
-    this.container.insertBefore(section, this.$list);
   };
 
   Widget.prototype._openLightbox = function (flyers, idx) {

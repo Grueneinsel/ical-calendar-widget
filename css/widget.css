@@ -381,10 +381,14 @@
   cursor: pointer;
   background: var(--bg);
   box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-  transition: transform 0.15s, box-shadow 0.15s;
   flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.35s ease, transform 0.15s, box-shadow 0.15s;
 }
-.cw-flyer-card:hover {
+.cw-flyer-card.cw-flyer-ready {
+  opacity: 1;
+}
+.cw-flyer-card.cw-flyer-ready:hover {
   transform: scale(1.06);
   box-shadow: 0 4px 12px rgba(0,0,0,0.25);
 }
