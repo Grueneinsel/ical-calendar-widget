@@ -18,12 +18,15 @@
     .then(function (text) {
       var events = IcalParser.parse(text, { dev: devMode });
 
+      var today = new Date(); today.setHours(0, 0, 0, 0);
+      var upcoming = events.filter(function (e) { return e.start >= today; });
+
       var flyers = [];
-      for (var i = 0; i < events.length && flyers.length < 3; i++) {
-        var atts = events[i].attachments || [];
+      for (var i = 0; i < upcoming.length && flyers.length < 3; i++) {
+        var atts = upcoming[i].attachments || [];
         for (var j = 0; j < atts.length && flyers.length < 3; j++) {
           if (atts[j].type === 'image') {
-            var ev = events[i];
+            var ev = upcoming[i];
             var emailInDesc = !!(cfg.email && ev.desc && ev.desc.indexOf(cfg.email) >= 0);
             flyers.push(Object.assign({
               eventTitle: ev.title,
