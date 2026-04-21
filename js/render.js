@@ -223,6 +223,13 @@ var CalendarWidget = (function () {
         if (e.key === 'Enter' || e.key === ' ') self._openLightbox(flyers, idx);
       });
 
+      if (f.eventTitle) {
+        var label = document.createElement('div');
+        label.className = 'cw-flyer-label';
+        label.textContent = f.eventTitle;
+        card.appendChild(label);
+      }
+
       var srcs = flyerSrcs(f);
       var img = document.createElement('img');
       img.className = 'cw-flyer-img';
