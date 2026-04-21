@@ -240,6 +240,15 @@ var CalendarWidget = (function () {
     this._flyerSection = section;
     var sectionInDom = false;
 
+    var heading = document.createElement('div');
+    heading.className = 'cw-flyers-heading';
+    heading.textContent = 'Aktuelle Flyer';
+    section.appendChild(heading);
+
+    var grid = document.createElement('div');
+    grid.className = 'cw-flyers-grid';
+    section.appendChild(grid);
+
     flyers.forEach(function (f, idx) {
       var card = document.createElement('div');
       card.className = 'cw-flyer-card';
@@ -276,7 +285,7 @@ var CalendarWidget = (function () {
       );
 
       card.appendChild(img);
-      section.appendChild(card);
+      grid.appendChild(card);
     });
   };
 
