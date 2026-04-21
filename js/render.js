@@ -296,10 +296,6 @@ var CalendarWidget = (function () {
       mailBtn.textContent = '✉ Anmelden';
       mailBtn.target = '_blank';
       topBar.appendChild(mailBtn);
-    } else {
-      /* spacer so close stays right even without mail button */
-      var spacer = document.createElement('span');
-      topBar.appendChild(spacer);
     }
 
     var rightBtns = document.createElement('div');
