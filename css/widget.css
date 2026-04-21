@@ -169,9 +169,8 @@
 .cw-loc-text {
   font-size: 11px;
   color: var(--text);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
   min-width: 0;
   flex: 1;
 }
@@ -367,21 +366,19 @@
 
 /* ── flyer gallery ── */
 .cw-flyers {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 6px;
   margin-bottom: 10px;
 }
 .cw-flyer-card {
   position: relative;
-  width: 240px;
   aspect-ratio: 210 / 297;
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
   background: var(--bg);
   box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-  flex-shrink: 0;
   opacity: 0;
   transition: opacity 0.35s ease, transform 0.15s, box-shadow 0.15s;
 }
@@ -413,9 +410,6 @@
   transition: opacity 0.15s;
 }
 .cw-flyer-card:hover .cw-flyer-label { opacity: 1; }
-@media (max-width: 600px) {
-  .cw-flyer-card { width: 100%; }
-}
 
 /* ── lightbox ── */
 .cw-lb-overlay {
