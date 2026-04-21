@@ -25,13 +25,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fetch ICS
+      - name: Fetch ICS + inject URL
         env:
           CALENDAR_URL: ${{ secrets.CALENDAR_URL }}
         run: |
           CLEAN_URL=$(echo "$CALENDAR_URL" | tr -d '\n\r\t ')
           if [ -n "$CLEAN_URL" ]; then
             curl -fsSL "$CLEAN_URL" -o dist/calendar.ics
+            # Inject URL into vars.js so ?btc can trigger live refresh after backup
+            sed -i "s|calendarUrl: ''|calendarUrl: '$CLEAN_URL'|" js/vars.js
           else
             echo "WARN: Secret CALENDAR_URL not set — skipping ICS fetch"
           fi
