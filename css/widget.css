@@ -80,6 +80,11 @@
   border-right: 1px solid var(--border);
   text-align: center;
 }
+.cw-day-row {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+}
 .cw-day {
   font-size: 20px;
   font-weight: 800;
