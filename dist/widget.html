@@ -43,7 +43,7 @@ function tryNext(idx){if(idx>=PROXIES.length)return Promise.reject(new Error('Ka
 return tryNext(0);}
 function fetchCalendar(url){function tryLocal(){return fetch('./calendar.ics',{signal:AbortSignal.timeout(4000)}).then(function(r){if(!r.ok)return null;return r.text().then(function(t){return t.indexOf('BEGIN:VCALENDAR')>=0?t:null;});}).catch(function(){return null;});}
 return tryLocal().then(function(local){if(local!==null)return local;if(!url)return Promise.reject(new Error('Kalender konnte nicht geladen werden.'));return fetchRemote(url);});}
-function fetchLive(url){if(!url)return Promise.reject(new Error('no url'));return fetchRemote(url);}
+function fetchLive(url){if(!url)return Promise.reject(new Error('no url'));var bust=url+(url.indexOf('?')>=0?'&':'?')+'_t='+Date.now();return fetchRemote(bust);}
 function fetchLocal(){return fetch('./calendar.ics',{signal:AbortSignal.timeout(4000)}).then(function(r){if(!r.ok)throw new Error('not found');return r.text().then(function(t){if(t.indexOf('BEGIN:VCALENDAR')<0)throw new Error('not ical');return t;});});}
 return{parse:parse,fetch:fetchCalendar,fetchLocal:fetchLocal,fetchLive:fetchLive,dateKey:dateKey};})();</script>
 <script>'use strict';var CalendarWidget=(function(){var MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];var WDAYS_SHORT=['So','Mo','Di','Mi','Do','Fr','Sa'];function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}

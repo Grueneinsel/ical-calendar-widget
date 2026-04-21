@@ -328,10 +328,12 @@ var IcalParser = (function () {
     });
   }
 
-  /* Fetch live URL via proxy chain — used as background refresh after backup is shown. */
+  /* Fetch live URL via proxy chain — used as background refresh after backup is shown.
+     Appends a timestamp so proxies never serve a cached copy. */
   function fetchLive(url) {
     if (!url) return Promise.reject(new Error('no url'));
-    return fetchRemote(url);
+    var bust = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_t=' + Date.now();
+    return fetchRemote(bust);
   }
 
   /* Fetch only from ./calendar.ics — no live URL, no proxies. */
