@@ -10,14 +10,7 @@
   var widget   = new CalendarWidget(document.getElementById('cw-root'));
 
   if (!icalUrl && !params.has('btc')) {
-    widget.setError(
-      'Kein Kalender angegeben.\n' +
-      'URL-Parameter:\n' +
-      '  ?url=https://…/basic.ics   — iCal-Feed URL\n' +
-      '  &email=info@beispiel.de    — Anmelde-E-Mail\n' +
-      'Beispiel:\n' +
-      '  widget.html?url=DEINE-ICS-URL&email=DEINE-EMAIL'
-    );
+    widget.setHint();
     return;
   }
 

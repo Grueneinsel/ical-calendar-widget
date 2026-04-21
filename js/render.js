@@ -211,6 +211,19 @@ var CalendarWidget = (function () {
     this._showStatus(msg, true);
   };
 
+  Widget.prototype.setHint = function () {
+    if (this.$status) this.$status.remove();
+    var box = document.createElement('div');
+    box.className = 'cw-hint';
+    box.innerHTML =
+      '<div class="cw-hint-title">&#128197; Kalender-Widget</div>' +
+      '<p>Kein Kalender angegeben. Füge einen der folgenden Parameter an die URL an:</p>' +
+      '<div class="cw-hint-row"><span class="cw-hint-param">?url=</span><span class="cw-hint-desc">iCal-Feed URL (Google Calendar, Outlook …)</span></div>' +
+      '<div class="cw-hint-row"><span class="cw-hint-param">&amp;email=</span><span class="cw-hint-desc">Kontakt-E-Mail für Anmelde-Buttons</span></div>' +
+      '<div class="cw-hint-example">widget.html?url=<em>DEINE-ICS-URL</em>&amp;email=<em>info@beispiel.de</em></div>';
+    this.$list.appendChild(box);
+  };
+
   /* ── flyer gallery ── */
   Widget.prototype.setFlyers = function (flyers) {
     if (!flyers || !flyers.length) return;
