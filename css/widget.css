@@ -346,7 +346,7 @@
 }
 .cw-flyer-card {
   position: relative;
-  width: 120px;
+  width: min(240px, calc(33.33% - 5px));
   aspect-ratio: 210 / 297;
   border-radius: 4px;
   overflow: hidden;
