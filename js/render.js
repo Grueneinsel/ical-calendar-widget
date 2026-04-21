@@ -434,14 +434,20 @@ var CalendarWidget = (function () {
       var multiDay = isMultiDay(ev);
       var date = document.createElement('div');
       date.className = 'cw-date';
-      var badgeHtml =
-        '<div class="cw-day">' + ev.start.getDate() + '</div>' +
-        '<div class="cw-wd">'  + WDAYS_SHORT[ev.start.getDay()] + '</div>';
+      var badgeHtml;
       if (multiDay) {
         var endD = lastInclusiveDay(ev);
-        var toLabel = endD.getDate() + '.';
-        if (endD.getMonth() !== ev.start.getMonth()) toLabel += (endD.getMonth() + 1) + '.';
-        badgeHtml += '<div class="cw-day-to">→' + toLabel + '</div>';
+        var dayNums = [];
+        var cur = new Date(ev.start);
+        while (cur <= endD) {
+          dayNums.push('<div class="cw-day">' + cur.getDate() + '</div>');
+          cur.setDate(cur.getDate() + 1);
+        }
+        badgeHtml = dayNums.join('');
+      } else {
+        badgeHtml =
+          '<div class="cw-day">' + ev.start.getDate() + '</div>' +
+          '<div class="cw-wd">'  + WDAYS_SHORT[ev.start.getDay()] + '</div>';
       }
       date.innerHTML = badgeHtml;
 
