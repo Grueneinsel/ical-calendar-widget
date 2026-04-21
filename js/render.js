@@ -456,8 +456,7 @@ var CalendarWidget = (function () {
         locLink.rel       = 'noopener';
         locLink.href      = mapsUrl(ev.location);
         locLink.innerHTML = '<span class="cw-loc-icon">&#x1F4CD;</span>' +
-                            '<span class="cw-loc-text">' + esc(ev.location) + '</span>' +
-                            '<span class="cw-loc-badge">Maps</span>';
+                            '<span class="cw-loc-text">' + esc(ev.location) + '</span>';
         locWrap.appendChild(locLink);
         body.appendChild(locWrap);
       }
