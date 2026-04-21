@@ -226,6 +226,9 @@ var CalendarWidget = (function () {
 
   /* ── flyer gallery ── */
   Widget.prototype.setFlyers = function (flyers) {
+    /* remove existing gallery on re-render */
+    var old = this.container.querySelector('.cw-flyers');
+    if (old) old.remove();
     if (!flyers || !flyers.length) return;
     var self = this;
 

@@ -326,6 +326,33 @@ var IcalParser = (function () {
     });
   }
 
+  /* Fetch only from the live URL — no local fallback, no proxies.
+     Used as background refresh after the cached copy is already shown. */
+  function fetchLive(url) {
+    if (!url) return Promise.reject(new Error('no url'));
+    try { url = decodeURIComponent(url); } catch (e) {}
+    return fetch(url, { signal: AbortSignal.timeout(10000) })
+      .then(function (r) {
+        if (!r.ok) throw new Error('not ok');
+        return r.text().then(function (t) {
+          if (t.indexOf('BEGIN:VCALENDAR') < 0) throw new Error('not ical');
+          return t;
+        });
+      });
+  }
+
+  /* Fetch only from ./calendar.ics — no live URL, no proxies. */
+  function fetchLocal() {
+    return fetch('./calendar.ics', { signal: AbortSignal.timeout(4000) })
+      .then(function (r) {
+        if (!r.ok) throw new Error('not found');
+        return r.text().then(function (t) {
+          if (t.indexOf('BEGIN:VCALENDAR') < 0) throw new Error('not ical');
+          return t;
+        });
+      });
+  }
+
   /* public API */
-  return { parse: parse, fetch: fetchCalendar, dateKey: dateKey };
+  return { parse: parse, fetch: fetchCalendar, fetchLocal: fetchLocal, fetchLive: fetchLive, dateKey: dateKey };
 })();
