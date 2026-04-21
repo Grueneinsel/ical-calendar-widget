@@ -500,13 +500,6 @@ var CalendarWidget = (function () {
         var ts = document.createElement('span');
         ts.textContent = '🕒 ' + timeStr;
         meta.appendChild(ts);
-      } else if (multiDay) {
-        var endDay = lastInclusiveDay(ev);
-        var endStr = endDay.getDate() + '. ' + MONTHS[endDay.getMonth()];
-        if (endDay.getFullYear() !== ev.start.getFullYear()) endStr += ' ' + endDay.getFullYear();
-        var tsMd = document.createElement('span');
-        tsMd.textContent = '📅 bis ' + endStr;
-        meta.appendChild(tsMd);
       }
 
       if (ev.location) {
