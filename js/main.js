@@ -6,6 +6,7 @@
   var params   = new URLSearchParams(location.search);
   var icalUrl  = params.get('url')   || cfg.calendarUrl || '';
   cfg.email    = params.get('email') || cfg.email       || '';
+  var devMode  = params.has('dev');
   var widget   = new CalendarWidget(document.getElementById('cw-root'));
 
   if (!icalUrl) {
@@ -15,7 +16,7 @@
 
   IcalParser.fetch(icalUrl)
     .then(function (text) {
-      var events = IcalParser.parse(text);
+      var events = IcalParser.parse(text, { dev: devMode });
 
       var flyers = [];
       for (var i = 0; i < events.length && flyers.length < 3; i++) {
@@ -33,7 +34,7 @@
       }
 
       widget.setFlyers(flyers);
-      widget.setEvents(events);
+      widget.setEvents(events, { dev: devMode });
     })
     .catch(function (err) { widget.setError(err.message); });
 })();

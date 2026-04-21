@@ -141,7 +141,7 @@ var IcalParser = (function () {
   }
 
   /* ── main parser ── */
-  function parse(text) {
+  function parse(text, opts) {
     var lines  = unfold(text).split(/\r\n|\n|\r/);
     var events = [];
     var ev     = null;
@@ -252,9 +252,10 @@ var IcalParser = (function () {
       }
     });
 
-    /* expand recurring events: 6 months back → 18 months forward */
-    var rangeStart = new Date();
-    rangeStart.setMonth(rangeStart.getMonth() - 6);
+    /* expand recurring events. dev=true → all history, else 6 months back */
+    var dev = opts && opts.dev;
+    var rangeStart = dev ? new Date(2000, 0, 1) : new Date();
+    if (!dev) rangeStart.setMonth(rangeStart.getMonth() - 6);
     var rangeEnd = new Date();
     rangeEnd.setMonth(rangeEnd.getMonth() + 18);
 

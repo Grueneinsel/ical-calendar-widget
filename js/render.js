@@ -312,16 +312,22 @@ var CalendarWidget = (function () {
   };
 
   /* ── main render ── */
-  Widget.prototype.setEvents = function (events) {
+  Widget.prototype.setEvents = function (events, opts) {
     this.$list.innerHTML = '';
 
-    var params   = new URLSearchParams(location.search);
-    var hidePast = params.get('past') === '0';
-    var today    = new Date(); today.setHours(0, 0, 0, 0);
+    var dev   = opts && opts.dev;
+    var today = new Date(); today.setHours(0, 0, 0, 0);
 
     var items = events
-      .filter(function (e) { return !hidePast || e.start >= today; })
+      .filter(function (e) { return dev || e.start >= today; })
       .sort(function (a, b) { return a.start - b.start; });
+
+    if (dev) {
+      var badge = document.createElement('div');
+      badge.className = 'cw-dev-badge';
+      badge.textContent = 'DEV — alle Termine inkl. Vergangenheit';
+      this.$list.appendChild(badge);
+    }
 
     if (!items.length) {
       this._showStatus('Keine bevorstehenden Termine.');
