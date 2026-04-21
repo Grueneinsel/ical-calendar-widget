@@ -442,13 +442,14 @@
   text-align: center;
 }
 .cw-flyers-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
 }
 .cw-flyer-card {
   position: relative;
+  flex: 0 0 150px;
   aspect-ratio: 210 / 297;
   border-radius: 8px;
   overflow: hidden;
