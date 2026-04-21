@@ -481,16 +481,16 @@
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  padding: 24px;
+  padding: 24px 24px 100px; /* bottom padding leaves room for button */
 }
 .cw-lb-overlay:fullscreen,
 .cw-lb-overlay:-webkit-full-screen {
   background: #000;
-  padding: 24px;
+  padding: 24px 24px 100px;
 }
 .cw-lb-img {
   max-width: 100%;
-  max-height: 90vh;
+  max-height: calc(100vh - 160px);
   border-radius: 4px;
   box-shadow: 0 8px 40px rgba(0,0,0,0.5);
   object-fit: contain;
@@ -522,6 +522,14 @@
   text-decoration: none;
   transform: translateX(-50%) translateY(-3px) scale(1.04);
   box-shadow: 0 0 0 4px rgba(255,255,255,0.35), 0 12px 36px rgba(0,0,0,0.7);
+}
+
+@media (max-width: 600px) {
+  .cw-lb-mail {
+    font-size: 16px;
+    padding: 14px 32px;
+    bottom: 20px;
+  }
 }
 
 .cw-lb-spinner {
