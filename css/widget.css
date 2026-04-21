@@ -340,9 +340,9 @@
 /* ── flyer gallery ── */
 .cw-flyers {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
   margin-bottom: 10px;
-  justify-content: flex-start;
 }
 .cw-flyer-card {
   position: relative;

@@ -22,9 +22,9 @@
       var upcoming = devMode ? events : events.filter(function (e) { return e.start >= today; });
 
       var flyers = [];
-      for (var i = 0; i < upcoming.length && flyers.length < 3; i++) {
+      for (var i = 0; i < upcoming.length && flyers.length < 20; i++) {
         var atts = upcoming[i].attachments || [];
-        for (var j = 0; j < atts.length && flyers.length < 3; j++) {
+        for (var j = 0; j < atts.length && flyers.length < 20; j++) {
           if (atts[j].type === 'image') {
             var ev = upcoming[i];
             var emailInDesc = !!(cfg.email && ev.desc && ev.desc.indexOf(cfg.email) >= 0);
