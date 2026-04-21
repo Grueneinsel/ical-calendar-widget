@@ -14,7 +14,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -29,8 +29,9 @@ jobs:
         env:
           CALENDAR_URL: ${{ secrets.CALENDAR_URL }}
         run: |
-          if [ -n "$CALENDAR_URL" ]; then
-            curl -fsSL "$CALENDAR_URL" -o dist/calendar.ics
+          CLEAN_URL=$(echo "$CALENDAR_URL" | tr -d '\n\r\t ')
+          if [ -n "$CLEAN_URL" ]; then
+            curl -fsSL "$CLEAN_URL" -o dist/calendar.ics
           else
             echo "WARN: Secret CALENDAR_URL not set — skipping ICS fetch"
           fi
