@@ -283,26 +283,9 @@ var CalendarWidget = (function () {
       overlay.remove();
     }
 
-    var close = document.createElement('button');
-    close.className = 'cw-lb-close';
-    close.innerHTML = '×';
-    close.addEventListener('click', closeOverlay);
-
-    var lbSpinner = document.createElement('div');
-    lbSpinner.className = 'cw-lb-spinner';
-
-    var img = document.createElement('img');
-    img.className = 'cw-lb-img';
-    img.alt = flyers[idx].eventTitle || 'Flyer';
-    img.style.display = 'none';
-    loadImg(img, flyerSrcs(flyers[idx]), 8000,
-      function () { lbSpinner.remove(); img.style.display = ''; },
-      function () { lbSpinner.remove(); img.style.display = ''; }
-    );
-
-    overlay.appendChild(close);
-    overlay.appendChild(lbSpinner);
-    overlay.appendChild(img);
+    /* ── top bar ── */
+    var topBar = document.createElement('div');
+    topBar.className = 'cw-lb-topbar';
 
     var f = flyers[idx];
     if (f.anmeldenEmail) {
@@ -312,8 +295,53 @@ var CalendarWidget = (function () {
         '?subject=' + encodeURIComponent(f.eventTitle || '');
       mailBtn.textContent = '✉ Anmelden';
       mailBtn.target = '_blank';
-      overlay.appendChild(mailBtn);
+      topBar.appendChild(mailBtn);
+    } else {
+      /* spacer so close stays right even without mail button */
+      var spacer = document.createElement('span');
+      topBar.appendChild(spacer);
     }
+
+    var rightBtns = document.createElement('div');
+    rightBtns.className = 'cw-lb-topbar-right';
+
+    /* zoom toggle */
+    var zoomed = false;
+    var zoomBtn = document.createElement('button');
+    zoomBtn.className = 'cw-lb-zoom';
+    zoomBtn.title = 'Zoom';
+    zoomBtn.innerHTML = '🔍';
+    zoomBtn.addEventListener('click', function () {
+      zoomed = !zoomed;
+      img.classList.toggle('cw-lb-img-zoom', zoomed);
+      zoomBtn.innerHTML = zoomed ? '🔎' : '🔍';
+    });
+
+    var close = document.createElement('button');
+    close.className = 'cw-lb-close';
+    close.innerHTML = '×';
+    close.addEventListener('click', closeOverlay);
+
+    rightBtns.appendChild(zoomBtn);
+    rightBtns.appendChild(close);
+    topBar.appendChild(rightBtns);
+    overlay.appendChild(topBar);
+
+    /* ── image ── */
+    var lbSpinner = document.createElement('div');
+    lbSpinner.className = 'cw-lb-spinner';
+
+    var img = document.createElement('img');
+    img.className = 'cw-lb-img';
+    img.alt = f.eventTitle || 'Flyer';
+    img.style.display = 'none';
+    loadImg(img, flyerSrcs(flyers[idx]), 8000,
+      function () { lbSpinner.remove(); img.style.display = ''; },
+      function () { lbSpinner.remove(); img.style.display = ''; }
+    );
+
+    overlay.appendChild(lbSpinner);
+    overlay.appendChild(img);
 
     overlay.addEventListener('click', function (e) {
       if (e.target === overlay) closeOverlay();
