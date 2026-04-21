@@ -340,8 +340,11 @@ var CalendarWidget = (function () {
       function () { lbSpinner.remove(); img.style.display = ''; }
     );
 
-    overlay.appendChild(lbSpinner);
-    overlay.appendChild(img);
+    var lbBody = document.createElement('div');
+    lbBody.className = 'cw-lb-body';
+    lbBody.appendChild(lbSpinner);
+    lbBody.appendChild(img);
+    overlay.appendChild(lbBody);
 
     overlay.addEventListener('click', function (e) {
       if (e.target === overlay) closeOverlay();
