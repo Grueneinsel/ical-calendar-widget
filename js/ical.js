@@ -280,6 +280,34 @@ var IcalParser = (function () {
   }
 
   /* ── CORS-aware fetch ── */
+
+  var PROXIES = [
+    function (u) { return u; },
+    function (u) { return 'https://corsproxy.io/?' + encodeURIComponent(u); },
+    function (u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); },
+    function (u) { return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u); },
+    function (u) { return 'https://thingproxy.freeboard.io/fetch/' + u; }
+  ];
+
+  /* Try each proxy in sequence until one returns valid iCal data. */
+  function fetchRemote(url) {
+    try { url = decodeURIComponent(url); } catch (e) {}
+    function tryNext(idx) {
+      if (idx >= PROXIES.length) return Promise.reject(new Error('Kalender konnte nicht geladen werden.'));
+      var timeout = idx === 0 ? 4000 : 10000;
+      return fetch(PROXIES[idx](url), { signal: AbortSignal.timeout(timeout) })
+        .then(function (r) {
+          if (!r.ok) return tryNext(idx + 1);
+          return r.text().then(function (t) {
+            if (t.indexOf('BEGIN:VCALENDAR') < 0) return tryNext(idx + 1);
+            return t;
+          });
+        })
+        .catch(function () { return tryNext(idx + 1); });
+    }
+    return tryNext(0);
+  }
+
   function fetchCalendar(url) {
     /* First try the cached same-origin copy (no CORS needed) */
     function tryLocal() {
@@ -293,52 +321,17 @@ var IcalParser = (function () {
         .catch(function () { return null; });
     }
 
-    /* normalise: decode any stray %40 → @ so Google Calendar accepts the URL */
-    try { url = decodeURIComponent(url); } catch (e) {}
-
-    var proxies = [
-      function (u) { return u; },
-      function (u) { return 'https://corsproxy.io/?' + encodeURIComponent(u); },
-      function (u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); },
-      function (u) { return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u); },
-      function (u) { return 'https://thingproxy.freeboard.io/fetch/' + u; }
-    ];
-
-    function tryNext(idx) {
-      if (idx >= proxies.length) return Promise.reject(new Error('Kalender konnte nicht geladen werden.'));
-      var timeout = idx === 0 ? 4000 : 10000;
-      return fetch(proxies[idx](url), { signal: AbortSignal.timeout(timeout) })
-        .then(function (r) {
-          if (!r.ok) return tryNext(idx + 1);
-          return r.text().then(function (t) {
-            /* basic sanity check: must look like iCal data */
-            if (t.indexOf('BEGIN:VCALENDAR') < 0) return tryNext(idx + 1);
-            return t;
-          });
-        })
-        .catch(function () { return tryNext(idx + 1); });
-    }
-
     return tryLocal().then(function (local) {
       if (local !== null) return local;
       if (!url) return Promise.reject(new Error('Kalender konnte nicht geladen werden.'));
-      return tryNext(0);
+      return fetchRemote(url);
     });
   }
 
-  /* Fetch only from the live URL — no local fallback, no proxies.
-     Used as background refresh after the cached copy is already shown. */
+  /* Fetch live URL via proxy chain — used as background refresh after backup is shown. */
   function fetchLive(url) {
     if (!url) return Promise.reject(new Error('no url'));
-    try { url = decodeURIComponent(url); } catch (e) {}
-    return fetch(url, { signal: AbortSignal.timeout(10000) })
-      .then(function (r) {
-        if (!r.ok) throw new Error('not ok');
-        return r.text().then(function (t) {
-          if (t.indexOf('BEGIN:VCALENDAR') < 0) throw new Error('not ical');
-          return t;
-        });
-      });
+    return fetchRemote(url);
   }
 
   /* Fetch only from ./calendar.ics — no live URL, no proxies. */
