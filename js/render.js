@@ -355,10 +355,14 @@ var CalendarWidget = (function () {
       function () { lbSpinner.remove(); img.style.display = ''; }
     );
 
+    var imgWrap = document.createElement('div');
+    imgWrap.className = 'cw-lb-img-wrap';
+    imgWrap.appendChild(img);
+
     var lbBody = document.createElement('div');
     lbBody.className = 'cw-lb-body';
     lbBody.appendChild(lbSpinner);
-    lbBody.appendChild(img);
+    lbBody.appendChild(imgWrap);
     overlay.appendChild(lbBody);
 
     overlay.addEventListener('click', function (e) {

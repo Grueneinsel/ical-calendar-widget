@@ -509,10 +509,14 @@
 .cw-lb-body {
   flex: 1;
   overflow: auto;
+  padding: 8px 16px 16px;
+}
+.cw-lb-img-wrap {
+  min-width: 100%;
+  min-height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 16px 16px;
 }
 .cw-lb-img {
   max-width: 100%;
