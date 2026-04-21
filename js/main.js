@@ -14,6 +14,15 @@
     return;
   }
 
+  /* Auto-resize: notify parent whenever content height changes */
+  if (window.ResizeObserver) {
+    new ResizeObserver(function () {
+      window.parent.postMessage(
+        { type: 'cw-resize', height: document.documentElement.scrollHeight }, '*'
+      );
+    }).observe(document.documentElement);
+  }
+
   IcalParser.fetch(icalUrl)
     .then(function (text) {
       var events = IcalParser.parse(text, { dev: devMode });
