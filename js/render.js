@@ -441,10 +441,8 @@ var CalendarWidget = (function () {
         var cur = new Date(ev.start);
         while (cur <= endD) {
           dayNums.push(
-            '<div class="cw-day-row">' +
-              '<div class="cw-day">' + cur.getDate() + '</div>' +
-              '<div class="cw-wd">'  + WDAYS_SHORT[cur.getDay()] + '</div>' +
-            '</div>'
+            '<div class="cw-day">' + cur.getDate() + '</div>' +
+            '<div class="cw-wd">'  + WDAYS_SHORT[cur.getDay()] + '</div>'
           );
           cur.setDate(cur.getDate() + 1);
         }
