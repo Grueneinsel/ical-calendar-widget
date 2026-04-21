@@ -59,7 +59,7 @@ var CalendarWidget = (function () {
   }
 
   /* ── attachment renderer ── */
-  function renderAttachment(att) {
+  function renderAttachment(att, onImageClick) {
     var wrap = document.createElement('div');
     wrap.className = 'cw-att';
 
@@ -67,7 +67,11 @@ var CalendarWidget = (function () {
       var img = document.createElement('img');
       img.alt       = 'Anhang';
       img.className = 'cw-att-img';
-      img.addEventListener('click', function () { window.open(att.url || img.src, '_blank'); });
+      img.style.cursor = 'pointer';
+      img.addEventListener('click', function () {
+        if (onImageClick) onImageClick();
+        else window.open(att.url || img.src, '_blank');
+      });
 
       var srcs = flyerSrcs(att);
       loadImg(img, srcs, 6000, function () {
@@ -580,8 +584,21 @@ var CalendarWidget = (function () {
         }
 
         if (hasAtts) {
+          var evCfgI = (typeof CW_CONFIG !== 'undefined') ? CW_CONFIG : {};
+          var emailInDescI = !!(evCfgI.email && ev.desc && ev.desc.indexOf(evCfgI.email) >= 0);
+          var imgFlyers = ev.attachments
+            .filter(function (a) { return a.type === 'image'; })
+            .map(function (a) {
+              return Object.assign({ eventTitle: ev.title, eventDesc: ev.desc || null,
+                eventStart: ev.start || null,
+                anmeldenEmail: emailInDescI ? evCfgI.email : null }, a);
+            });
           ev.attachments.forEach(function (att) {
-            infoPanel.appendChild(renderAttachment(att));
+            var imgIdx = imgFlyers.findIndex ? imgFlyers.findIndex(function (f) { return f === att || f.url === att.url; }) : -1;
+            var cb = (att.type === 'image' && imgIdx >= 0)
+              ? function (i) { return function () { self._openLightbox(imgFlyers, i); }; }(imgIdx)
+              : null;
+            infoPanel.appendChild(renderAttachment(att, cb));
           });
         }
 
