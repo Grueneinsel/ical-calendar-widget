@@ -1,6 +1,8 @@
 name: Deploy to GitHub Pages
 
 on:
+  schedule:
+    - cron: '0 * * * *'   # stündlich neu bauen + deployen
   push:
     branches: [main]
   workflow_dispatch:
@@ -22,6 +24,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Fetch ICS
+        run: |
+          curl -fsSL \
+            "https://calendar.google.com/calendar/ical/c77f5869d3e32b0381ec5ecc6a7d91b0b357ffe6a9cb989fc5f25bcf3b19dec8@group.calendar.google.com/public/basic.ics" \
+            -o dist/calendar.ics
 
       - name: Build
         run: python3 bundler.py
