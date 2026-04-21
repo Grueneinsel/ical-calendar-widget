@@ -281,18 +281,28 @@ var IcalParser = (function () {
 
   /* ── CORS-aware fetch ── */
   function fetchCalendar(url) {
+    /* normalise: decode any stray %40 → @ so Google Calendar accepts the URL */
+    try { url = decodeURIComponent(url); } catch (e) {}
+
     var proxies = [
       function (u) { return u; },
       function (u) { return 'https://corsproxy.io/?' + encodeURIComponent(u); },
-      function (u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); }
+      function (u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); },
+      function (u) { return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u); },
+      function (u) { return 'https://thingproxy.freeboard.io/fetch/' + u; }
     ];
 
     function tryNext(idx) {
       if (idx >= proxies.length) return Promise.reject(new Error('Kalender konnte nicht geladen werden.'));
-      return fetch(proxies[idx](url), { signal: AbortSignal.timeout(8000) })
+      var timeout = idx === 0 ? 4000 : 10000;
+      return fetch(proxies[idx](url), { signal: AbortSignal.timeout(timeout) })
         .then(function (r) {
           if (!r.ok) return tryNext(idx + 1);
-          return r.text();
+          return r.text().then(function (t) {
+            /* basic sanity check: must look like iCal data */
+            if (t.indexOf('BEGIN:VCALENDAR') < 0) return tryNext(idx + 1);
+            return t;
+          });
         })
         .catch(function () { return tryNext(idx + 1); });
     }
