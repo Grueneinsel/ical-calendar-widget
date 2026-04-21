@@ -507,21 +507,19 @@
   font-weight: 800;
   padding: 18px 52px;
   border-radius: 50px;
+  border: 3px solid #fff;
   text-decoration: none;
   font-family: system-ui, sans-serif;
   white-space: nowrap;
   letter-spacing: 0.5px;
-  box-shadow: 0 0 0 4px rgba(255,255,255,0.25), 0 6px 28px rgba(0,0,0,0.6);
-  outline: 3px solid #fff;
-  outline-offset: 3px;
-  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 16px #000, 0 0 0 6px var(--accent);
+  transition: background 0.15s, transform 0.15s;
 }
 .cw-lb-mail:hover {
   background: var(--accent-dark);
   color: #fff;
   text-decoration: none;
   transform: translateX(-50%) translateY(-3px) scale(1.04);
-  box-shadow: 0 0 0 4px rgba(255,255,255,0.35), 0 12px 36px rgba(0,0,0,0.7);
 }
 
 @media (max-width: 600px) {
