@@ -28,12 +28,17 @@
     var today   = new Date(); today.setHours(0, 0, 0, 0);
     var upcoming = devMode ? events : events.filter(function (e) { return e.start >= today; });
 
+    /* Flyers: show until the event is over (use end date if available) */
+    var flyerEvents = devMode ? events : events.filter(function (e) {
+      return (e.end || e.start) >= today;
+    });
+
     var flyers = [];
-    for (var i = 0; i < upcoming.length && flyers.length < 21; i++) {
-      var atts = upcoming[i].attachments || [];
+    for (var i = 0; i < flyerEvents.length && flyers.length < 21; i++) {
+      var atts = flyerEvents[i].attachments || [];
       for (var j = 0; j < atts.length && flyers.length < 21; j++) {
         if (atts[j].type === 'image') {
-          var ev = upcoming[i];
+          var ev = flyerEvents[i];
           var emailInDesc = !!(cfg.email && ev.desc && ev.desc.indexOf(cfg.email) >= 0);
           flyers.push(Object.assign({
             eventTitle: ev.title,
