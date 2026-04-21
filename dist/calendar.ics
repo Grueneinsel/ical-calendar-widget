@@ -1,0 +1,507 @@
+BEGIN:VCALENDAR
+PRODID:-//Google Inc//Google Calendar 70.9054//EN
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:BTC Jugend
+X-WR-TIMEZONE:Europe/Berlin
+X-WR-CALDESC:Gruppenkalender der BTC-Jugend\n
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20250524
+DTEND;VALUE=DATE:20250525
+DTSTAMP:20260421T151324Z
+UID:c3c231f9eb7c411397ba1264749c0e21@google.com
+CREATED:20241113T124338Z
+DESCRIPTION:Flyer: <a href="https://www.btc-herne.de/btc-schlossfest-am-24-
+ 05-2025/">https://www.btc-herne.de/btc-schlossfest-am-24-05-2025/</a>
+LAST-MODIFIED:20250326T182849Z
+LOCATION:Schloß-Strünkede-Straße\, 44629 Herne\, Deutschland
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:BTC Schlossfest
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20250506T160000Z
+DTEND:20250506T180000Z
+DTSTAMP:20260421T151324Z
+UID:68sjae1j69im4b9mchhm8b9kc9h38bb16coj6bb668o30p1nc5i64c9lcg@google.com
+CREATED:20250218T172418Z
+DESCRIPTION: <br>Möchtest du Teil unseres Teams werden? Dann melde dich ger
+ ne unter <a>jugend@btc-herne.de</a>!
+LAST-MODIFIED:20250428T132621Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:BTC Jugendausschuss (Intern)
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20260213T160000Z
+DTEND:20260213T183000Z
+DTSTAMP:20260421T151324Z
+UID:e39d995208bd4651946b80d1a081faa9@google.com
+CREATED:20251118T213448Z
+DESCRIPTION:Ausgebucht!
+LAST-MODIFIED:20260203T143659Z
+LOCATION:Grundschule Ohmstraße\, Ohmstraße 2\, 44629 Herne\, Deutschland
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:BTC Jugend: Karnevalsfeier
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20260414T150000Z
+DTEND:20260414T170000Z
+DTSTAMP:20260421T151324Z
+UID:e03c8486eb524ab0b0dc62f7cabc0986@google.com
+CREATED:20251206T112016Z
+DESCRIPTION:Wir spielen Minigolf\n\nKommt mit uns zum Schwarzlicht-Semester
+  in Bochum\n– leuchtende Farben\, coole Bahnen und jede Menge Spaß beim Sch
+ warzlicht-Minigolf!\n\nWann: Dienstag\, 14.04.2026\, 17:00 – ca. 19:00 Uhr\
+ nKosten: 8 € pro Person\nWer: BTC-Mitglieder ab 8 Jahren (max. 40 Teilnehme
+ nde)\nTreffpunkt: 16:45 Uhr am Eingang Schwarzlicht Semester Bochum\,\nHern
+ er Straße 221–223\, 44809 Bochum\n\nWichtig: Wir suchen noch erwachsene Beg
+ leitpersonen\, die mitspielen und die Gruppe unterstützen – auch Begleitper
+ sonen zahlen 8 €.\n\nAnmeldung (verbindlich) bis zum 07.04.2026:\nBitte bei
+  der Anmeldung Name\, Geburtsdatum\, Gruppe und Notfall-Telefonnummer angeb
+ en.\n\nAnmeldung und Fragen:\nFrederik Konopka: jugend@btc-herne.de\n Telef
+ on: 01525 5385967\nMit der Anmeldung verpflichtet ihr euch zur Zahlung!\n\n
+ Wir freuen uns auf euch!\nEuer Jugendausschuss
+LAST-MODIFIED:20260323T080921Z
+LOCATION:Schwarzlicht Semester Minigolf Bochum\, Herner Str. 221-223\, 4480
+ 9 Bochum\, Deutschland
+SEQUENCE:3
+STATUS:CONFIRMED
+SUMMARY:BTC Jugend: Schwazlicht-Minigolf in Bochum
+TRANSP:TRANSPARENT
+ATTACH;FILENAME=Minigolf_26 (1).pdf;FMTTYPE=application/pdf:https://drive.g
+ oogle.com/open?id=1170KRSuJYhpAD-c7w4hqdGhggHaNRo44
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20260620
+DTEND;VALUE=DATE:20260621
+DTSTAMP:20260421T151324Z
+UID:202d0e609cdc4a5f94ae0e98ad5cb4e1@google.com
+CREATED:20251118T213448Z
+LAST-MODIFIED:20251118T213449Z
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:BTC Jugend: Outdoor-Klettern
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20261109
+DTEND;VALUE=DATE:20261110
+DTSTAMP:20260421T151324Z
+UID:cae7ae81d2a24abf944902df53082850@google.com
+CREATED:20251118T213448Z
+LAST-MODIFIED:20251118T213449Z
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:BTC Jugend: Lasertag
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20261202
+DTEND;VALUE=DATE:20261203
+DTSTAMP:20260421T151324Z
+UID:0e6dc2118c2f47a49fc4e1b84b6452ec@google.com
+CREATED:20251118T213448Z
+LAST-MODIFIED:20251118T213448Z
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:BTC Jugend: Backen
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20251207T130000Z
+DTEND:20251207T180000Z
+DTSTAMP:20260421T151324Z
+UID:6kqjgcpm65j3gb9mcli3ab9k71hjab9occp36bb3cksjidpocgqjadpg6s@google.com
+CREATED:20251119T084000Z
+LAST-MODIFIED:20251206T114150Z
+LOCATION:Herne Westringhalle
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:BTC Nikolausfeier
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20251203T153000Z
+DTEND:20251203T173000Z
+DTSTAMP:20260421T151324Z
+UID:25d1680aaca846569fab42f6d66111e9@google.com
+CREATED:20240924T203717Z
+DESCRIPTION:<a href="https://drive.google.com/file/d/16h2DfvYK9NseDtfBdtiVy
+ V1WOifcb5s0/view?usp=drive_link">Flyer</a><br><br><br>Weihnachtsbacken: Wir
+  backen Plätzchen<br><br>Wann: Mittwoch\, 3.12.2025 16.30 Uhr – 18.30 Uhr\,
+  ab 6 Jahren<br><br>Wo: Sportjugendhaus\, Westring 263<br><br>Kosten: 2 Eur
+ o<br><br>!!! Voranmeldung erforderlich !!! Teilnehmerzahl begrenzt Bitte de
+ n Namen\, Alter\, Telefon und Abteilung angeben! Meldeschluss: 28.11.2025<b
+ r><br>Mitzubringen sind: Backklamotten oder Schürze Trinkbecher<br><br>Für 
+ Getränke ist gesorgt.<br><br>!!! Kinder bitte abholen !!!<br><br>Anmeldunge
+ n unter: <a href="mailto:jugend@btc-herne.de" target="_blank">jugend@btc-he
+ rne.de</a><br><br>Infos: Rudolf Winkler: 0171 7818691<br><br>Euer Jugendaus
+ schuss
+LAST-MODIFIED:20251007T193636Z
+LOCATION:Sportjugendhaus\, Westring 263\, 44629 Herne\, Deutschland
+SEQUENCE:2
+STATUS:CONFIRMED
+SUMMARY:BTC Backen
+TRANSP:TRANSPARENT
+ATTACH;FILENAME=Backen.png;FMTTYPE=image/png:https://drive.google.com/open?
+ id=16h2DfvYK9NseDtfBdtiVyV1WOifcb5s0
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20261119
+DTEND;VALUE=DATE:20261120
+DTSTAMP:20260421T151324Z
+UID:a7e2324a1ac24f008e8840810ac332a1@google.com
+CREATED:20251118T213448Z
+LAST-MODIFIED:20251118T213448Z
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:BTC Jugend: Basteln
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20250923
+DTEND;VALUE=DATE:20250924
+DTSTAMP:20260421T151324Z
+UID:9757bbb21fe74ec9a52faa6a4d70d37e@google.com
+CREATED:20240924T203439Z
+DESCRIPTION:Flyer: <a href="https://drive.google.com/file/d/1xotvF9t0PsStu6
+ r6Jab_VEnqbPpuom_d/view?usp=sharing" target="_blank" class="pastedDriveLink
+ -0"><u>https://drive.google.com/file/d/1xotvF9t0PsStu6r6Jab_VEnqbPpuom_d/vi
+ ew?usp=sharing</u></a>
+LAST-MODIFIED:20250630T222305Z
+LOCATION:Kletterzentrum Neoliet Bochum\, Flottmannstraße 53H\, 44807 Bochum
+ \, Deutschland
+SEQUENCE:2
+STATUS:CONFIRMED
+SUMMARY:BTC Indoor-Klettern
+TRANSP:OPAQUE
+ATTACH;FILENAME=Neoliet_25.pdf;FMTTYPE=application/pdf:https://drive.google
+ .com/open?id=1xotvF9t0PsStu6r6Jab_VEnqbPpuom_d
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20260926
+DTEND;VALUE=DATE:20260927
+DTSTAMP:20260421T151324Z
+UID:cd9a1e038e224b619313b99834be0546@google.com
+CREATED:20251118T213448Z
+LAST-MODIFIED:20251118T213448Z
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:BTC Jugend: Indoor Park
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20260130T170000Z
+DTEND:20260130T190000Z
+DTSTAMP:20260421T151324Z
+UID:2a6cadf99d154868ac919e34f2e740c5@google.com
+CREATED:20251118T213448Z
+DESCRIPTION:Einladung\nWir laden alle Jugendlichen herzlich zum Vereinsjuge
+ ndtag ein.\nWann: am Freitag\, 30. Januar 2026\nWo: in der Pestalozzi Sport
+ halle\nBeginn: um 18.00 Uhr\nNach der Wahl – ab ca. 18.30 bis 20.00 Uhr wir
+ d der neue Jugendausschuss mit euch Sport und Spiel anbieten. Kommt vorbei 
+ und wir können gemeinsam Spaß haben.\nBringt Sportsachen mit!\nMit freundli
+ chen Grüßen\nEuer Jugendvorstand\nP.S. Wahlberechtigt sind alle BTC-Jugendl
+ iche von 8 – 18 Jahre!!!
+LAST-MODIFIED:20251215T103344Z
+LOCATION:Sporthalle Harpener Weg\, Harpener Weg\, 44629 Herne\, Deutschland
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:BTC Jugend: Vereinsjugendtag
+TRANSP:OPAQUE
+ATTACH;FILENAME=Einladung Vereinsjugendtag 2026.png;FMTTYPE=image/png:https
+ ://drive.google.com/open?id=1aRoN99X0_7Hc5Q6slcWMnICXagvEh6GR
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20251120T153000Z
+DTEND:20251120T173000Z
+DTSTAMP:20260421T151324Z
+UID:1378fb1b914e432d9e8b2f284c82f363@google.com
+CREATED:20240924T203703Z
+DESCRIPTION:<a href="https://drive.google.com/file/d/1JFuYdXioN350JPlAtVYeC
+ n_B696spXlp/view?usp=drive_link" target="_blank">Flyer</a><br><br><a href="
+ https://drive.google.com/file/d/16h2DfvYK9NseDtfBdtiVyV1WOifcb5s0/view?usp=
+ drive_link" target="_blank"></a><br>Wir basteln mit Metallfolie<br><br>Hall
+ o Bastelfreunde<br><br>Wir wollen wieder mit Euch etwas basteln – schöne St
+ erne und Laternen.<br><br>Wann: Donnerstag\, 20.11.2025\, 16.30 bis 18.30 U
+ hr – ab 6 Jahren<br><br>Wo: Sportjugendhaus\, Westring 263<br><br>Kosten: 2
+  Euro<br><br>Bitte Bleistift\, Schere\, Kleber und einen Trinkbecher mitbri
+ ngen.<br><br>Für Getränke ist gesorgt.<br><br>!!! Voranmeldung erforderlich
+  !!! Teilnehmerzahl begrenzt Bitte den Namen\, Alter\, Telefon und Abteilun
+ g angeben! Meldeschluss: 17.11.2025<br><br>Anmeldungen unter: <a href="mail
+ to:jugend@btc-herne.de" target="_blank">jugend@btc-herne.de</a><br><br>Info
+ s: Rudolf Winkler Handy 0171 7818691<br><br>!!! Kinder bitte abholen !!!<br
+ ><br>Euer Jugendausschuss
+LAST-MODIFIED:20251007T193933Z
+LOCATION:Sportjugendhaus\, Westring 263\, 44629 Herne\, Deutschland
+SEQUENCE:2
+STATUS:CONFIRMED
+SUMMARY:BTC Basteln
+TRANSP:TRANSPARENT
+ATTACH;FILENAME=Basteln.png;FMTTYPE=image/png:https://drive.google.com/open
+ ?id=1JFuYdXioN350JPlAtVYeCn_B696spXlp
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20250228T150000Z
+DTEND:20250228T190000Z
+DTSTAMP:20260421T151324Z
+UID:852e8a3c42af4f6295cad87f8eb76bf7@google.com
+CREATED:20240924T203202Z
+LAST-MODIFIED:20250219T174631Z
+LOCATION:Grundschule Ohmstraße\, Ohmstraße 2\, 44629 Herne\, Deutschland
+SEQUENCE:3
+STATUS:CONFIRMED
+SUMMARY:BTC Karneval
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20251117T160000Z
+DTEND:20251117T180000Z
+DTSTAMP:20260421T151324Z
+UID:62db16e3302c493a96c2599e274ea4d6@google.com
+CREATED:20240924T203632Z
+DESCRIPTION:<a href="https://drive.google.com/file/d/1ZAiFLz8n8SvcgawZXjy6x
+ FDpTGvsOJh5/view?usp=drive_link">Flyer</a><br><br><a href="/"></a>Kommt mit
+  uns ins BLAZE LaserTag Herne <br>– zwei Stunden Action\, Teamwork und rich
+ tig viel Spaß!<br><br>Wann: Montag\, 17.11.2025\, 17:00–19:00 Uhr<br>Kosten
+ : 10 € pro Person<br>Wer: BTC-Mitglieder ab 9 Jahren (max. 28 Teilnehmende)
+ <br>Treffpunkt: 16:45 Uhr am Eingang BLAZE LaserTag Herne\, Bahnhofstraße 1
+ 62–168\, 44629 Herne<br><br>Ihr benötigt:<br>festes Schuhwerk<br>dunkle\, s
+ portliche Kleidung (empfohlen)<br>Getränke dürfen mitgebracht werden<br><br
+ >Anmeldung (verbindlich und zahlungspflichtig) <br>bis zum 10.11.2025:<br>B
+ itte bei der Anmeldung Name\, Geburtsdatum\, Gruppe und Notfall-Telefonnumm
+ er angeben. <br><br>Anmeldung und Fragen:<br>Frederik Konopka: <a href="mai
+ lto:jugend@btc-herne.de" target="_blank">jugend@btc-herne.de</a> Tel. 01525
+  5385967<br>Mit der Anmeldung verpflichtet ihr euch zur Zahlung!<br><br>Wir
+  freuen uns auf euch!<br>Euer Jugendausschuss
+LAST-MODIFIED:20250928T202026Z
+LOCATION:BLAZE LaserTag Herne\, Bahnhofstraße 162-168\, 44629 Herne\, Deuts
+ chland
+SEQUENCE:5
+STATUS:CONFIRMED
+SUMMARY:BTC LaserTag
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20250617T160000Z
+DTEND:20250617T190000Z
+DTSTAMP:20260421T151324Z
+UID:6kq3eopo6gojib9g6hh34b9kclhmab9p6kp3abb56cr62p9gc9i3ge9g6c@google.com
+CREATED:20250604T192133Z
+DESCRIPTION:Lust Teil des Teams zu sein? Melde dich gerne auf jugend@btc-he
+ rne.de
+LAST-MODIFIED:20250624T234959Z
+LOCATION:Baukauer Turnclub Herne 1879 e. V.\, Bahnhofstraße 141\, 44623 Her
+ ne\, Deutschland
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Jugendausschuss: Sitzung
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20260509T080000Z
+DTEND:20260509T160000Z
+DTSTAMP:20260421T151324Z
+UID:c14709dbb68441dbb73468adcf2dbcfb@google.com
+CREATED:20251118T213448Z
+DESCRIPTION:<u>Liebe BTC-Kinder\, Jugendliche und Eltern\,</u><br>habt ihr 
+ Lust auf einen unvergesslichen Tag voller Action\, Spaß und Abenteuer?<br>D
+ ann kommt mit uns in den Movie Park Germany!<br><br>Wann? Samstag\, den 09.
+ 05.2026\, von 10:00 bis 18:00 Uhr<br>Treffpunkt: 10:00 Uhr vor dem Parkeing
+ ang<br>Alternativer Treffpunkt: Wer möchte\, kann sich bereits um 8:50 Uhr 
+ am<br>Herner Bahnhof treffen\, um gemeinsam mit der Bahn zum Movie Park zu 
+ fahren.<br>Für eine gültige Fahrkarte muss jeder selber sorgen.<br><br>Für 
+ wen? BTC-Kinder\, Jugendliche und Eltern<br>(Teilnahme ab 12 Jahren auch oh
+ ne Eltern möglich)<br>Verpflegung: Selbstverpflegung<br><br>Kosten: BTC-Kin
+ der ab 4 Jahre und Jugendliche: 18 €<br>Begleitpersonen: 23 €\, Kleinkinder
+  bis 3 Jahre frei.<br>Frist: Anmeldung und Zahlung bis spätestens 15.03.202
+ 6!<br><br>Bei der Anmeldung bitte folgende Informationen angeben: Name\, Al
+ ter\,<br>Gruppe\, Notfalltelefonnummer\, Treffpunkt (Herne Bahnhof oder Par
+ kplatz)<br>Anmeldung per E-Mail an: <b><a href="mailto:jugend@btc-herne.de"
+ >jugend@btc-herne.de</a></b><br><br>Zahlungsdetails:<br>IBAN:<b> DE45 4325 
+ 0030 0001 0024 01 </b>BIC: <b>WELADED1HRN</b><br>Verwendungszweck: Movie Pa
+ rk + Familienname (zur Zuordnung der Zahlung)<br><br>Kontakt für Fragen: Ru
+ dolf Winkler<br>E-Mail:<b><a href="mailto:jugend@btc-herne.de"> jugend@btc-
+ herne.de</a></b> Telefon: <b>0171 7818691</b><br><br><b>Wichtiger Hinweis:<
+ /b> Bei schlechtem Wetter behalten wir uns vor\, den Ausflug bis zu<br>eine
+ m Tag vorher abzusagen. In diesem Fall werden wir euch informieren\,<br>und
+  der gezahlte Betrag wird erstattet.<br><br>Wir freuen uns auf einen tollen
+  Tag mit euch!<br>Euer Jugendausschuss
+LAST-MODIFIED:20260112T103713Z
+LOCATION:Movie Park Germany\, Warner-Allee 1\, 46244 Bottrop\, Deutschland
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:BTC Jugend: Movie Park
+TRANSP:OPAQUE
+ATTACH;FILENAME=Moviepark_26.pdf;FMTTYPE=application/pdf:https://drive.goog
+ le.com/open?id=1V5TOFm4pJbqEwgamOwzhjvwc79lWN96f
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20250510T080000Z
+DTEND:20250510T160000Z
+DTSTAMP:20260421T151324Z
+UID:c91514f3f68d43f596f838a76b1e7873@google.com
+CREATED:20250129T202031Z
+DESCRIPTION:Flyer: <a href="https://www.btc-herne.de/ausflug-in-den-movie-p
+ ark-am-10-05-2025/">https://www.btc-herne.de/ausflug-in-den-movie-park-am-1
+ 0-05-2025/</a>
+LAST-MODIFIED:20250326T182444Z
+LOCATION:Movie Park Germany\, Warner-Allee 1\, 46244 Bottrop\, Deutschland
+SEQUENCE:3
+STATUS:CONFIRMED
+SUMMARY:BTC Moviepark
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20261006
+DTEND;VALUE=DATE:20261007
+DTSTAMP:20260421T151324Z
+UID:61892238bd69485ebff3a508ee6722a3@google.com
+CREATED:20251118T213448Z
+LAST-MODIFIED:20251118T213951Z
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:BTC Jugend: Indoor-Klettern
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20260117T163000Z
+DTEND:20260117T180000Z
+DTSTAMP:20260421T151324Z
+UID:0510be090fa7485087eee87bdf0f39ff@google.com
+CREATED:20251118T213448Z
+DESCRIPTION:Familiennachtwanderung\nZum Jahresanfang möchten wir mit allen 
+ Mitgliedern vom BTC und deren Familien\neine Familiennachtwanderung durchfü
+ hren.\nWann: Samstag 10. Januar 2026\nTreffpunkt: 17:30 Uhr vor der Eishall
+ e im Gysenbergpark\nMitzubringen: Gute Laune und eine Taschenlampe\nKostenb
+ eitrag: 1\,00 Euro pro Person\nAm Ziel der Wanderung ist für warme Getränke
+  gesorgt.\nDie Strecke ist für Kinderwagen geeignet\nAnmeldung unter: jugen
+ d@btc-herne.de\nBitte Namen\, Abteilung und die Anzahl der Personen angeben
+ \nWir freuen uns auf euch!\nEuer Jugendausschuss
+LAST-MODIFIED:20260112T100123Z
+LOCATION:Revierpark Gysenberg Herne GmbH\, Am Revierpark 40\, 44627 Herne\,
+  Deutschland
+SEQUENCE:2
+STATUS:CONFIRMED
+SUMMARY:VERSCHOBEN AUF 17.01.! BTC Jugend: Nachtwanderung
+TRANSP:OPAQUE
+ATTACH;FILENAME=Nachtwanderung.jpeg;FMTTYPE=image/jpeg:https://drive.google
+ .com/open?id=1dLy0u1sVp0rNqTu3bRAl5ZOOehBZ3wBT
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20260604
+DTEND;VALUE=DATE:20260608
+DTSTAMP:20260421T151324Z
+UID:877d167f5ee7484caf04cb8e10b67cb0@google.com
+CREATED:20251118T213448Z
+DESCRIPTION:Wochenendfreizeit\n\nnach\nHinsbeck\n\nvom Do.4.6. bis So. 7.6.
+ 2026\n(Fronleichnam)\n\nTreffpunkt 10.00 Uhr\nSporthalle Pestalozzi-Gymnasi
+ um\n\nAlter: 8 – ( 16 ) Jahre\nTeilnehmerzahl begrenzt\n\nKostenbeitrag für
+  Vollverpflegung\,\nFreizeitangebot\, Hin- und\nRückfahrt\n\n130\,- Euro\n(
+ Davon 50€ Vorrauszahlung)\n\nHier können sich die Kids so richtig\nwohlfühl
+ en. Das Jugendferiendorf liegt am\nOrtsrand von Hinsbeck\, einem Stadtteil 
+ der\nGemeinde Nettetal. Im Naturschutzgebiet\n„Maas-Schwalm-Nette“.\n\nweit
+ eres unter:\nhttps://hinsbeck.nrw/\n\nSchatzsuche mit Edgar\n(Wetterabhängi
+ g)\n\n\nSport   Spiel   Spannung\n\n\nInfos und Anmeldungen:\nRudolf Winkle
+ r            0171 7818691\n\njugend@btc-herne.de\n\nAnmeldungen gibt es unt
+ er\nhttps://www.btc-herne.de/jugend/\n\nAnmeldeschluss: 18.4.2026\n\n\nBauk
+ auer Turnclub 1879 e.V.\nHerne\nBTC\n\nJugend
+LAST-MODIFIED:20260128T201654Z
+LOCATION:Sport- und Erlebnisdorf Hinsbeck\, Heide 2 c\, 41334 Nettetal\, De
+ utschland
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:BTC Jugend: Hinsbeck-Fahrt
+TRANSP:OPAQUE
+ATTACH;FILENAME=Wochenendfreizeit_Hinsbeck_2026 Handzettel_1 (1).pdf;FMTTYP
+ E=application/pdf:https://drive.google.com/open?id=15iyBPiLuipstq-d68WsGz16
+ oDC8vrVPf
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20250322
+DTEND;VALUE=DATE:20250323
+DTSTAMP:20260421T151324Z
+UID:993c540f37974a3395e74f3af4dfebec@google.com
+CREATED:20240924T203244Z
+LAST-MODIFIED:20260405T083132Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:BTC Trampolin (Abgesagt)
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20250920
+DTEND;VALUE=DATE:20250921
+DTSTAMP:20260421T151324Z
+UID:68rmadph6so30b9ocopj0b9k64rm8b9p70s3gb9n6ormceb265i34eb1ck@google.com
+CREATED:20250617T163315Z
+DESCRIPTION:Flyer: <a href="https://drive.google.com/file/d/1eJ7ldIbrCb0aIE
+ DhRxCsC53710_SV7QH/view?usp=sharing" target="_blank" class="pastedDriveLink
+ -0"><u>https://drive.google.com/file/d/1eJ7ldIbrCb0aIEDhRxCsC53710_SV7QH/vi
+ ew?usp=sharing</u></a>   Treffen auf der großen Wiese
+LAST-MODIFIED:20250630T222240Z
+LOCATION:Revierpark Gysenberg Herne GmbH\, Am Revierpark 40\, 44627 Herne\,
+  Deutschland
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:BTC Familienralley am Weltkindertag
+TRANSP:TRANSPARENT
+ATTACH;FILENAME=Familienrallye_25.pdf;FMTTYPE=application/pdf:https://www.g
+ oogle.com/url?q=https://drive.google.com/file/d/1eJ7ldIbrCb0aIEDhRxCsC53710
+ _SV7QH/view?usp
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20250516
+DTEND;VALUE=DATE:20250519
+DTSTAMP:20260421T151324Z
+UID:7b27fda53a884f78afb89eacac4fa0c7@google.com
+CREATED:20240918T183939Z
+DESCRIPTION:Flyer: <a href="https://www.btc-herne.de/wochenendfreizeit-der-
+ jugend-in-hachen-vom-16-18-05-2025/">https://www.btc-herne.de/wochenendfrei
+ zeit-der-jugend-in-hachen-vom-16-18-05-2025/</a>
+LAST-MODIFIED:20250326T182609Z
+LOCATION:Sport- und Tagungszentrum Hachen\, Am Holthahn 1\, 59846 Sundern (
+ Sauerland)\, Deutschland
+SEQUENCE:2
+STATUS:CONFIRMED
+SUMMARY:BTC Jugend Fahrt
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20260530
+DTEND;VALUE=DATE:20260531
+DTSTAMP:20260421T151324Z
+UID:6kpm4cb2c5j34bb2cks3gb9k71gjabb270p3eb9g60q66ob16gojgo9k60@google.com
+CREATED:20251001T094713Z
+LAST-MODIFIED:20251215T103928Z
+LOCATION:Schloss Strünkede\, Karl-Brandt-Weg 5\, 44629 Herne\, Deutschland
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:BTC Schlossfest
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20250614T073000Z
+DTEND:20250614T133000Z
+DTSTAMP:20260421T151324Z
+UID:5a29bad1dd3940368a58b5ce785e38da@google.com
+CREATED:20240924T203334Z
+DESCRIPTION:Flyer: <a href="https://drive.google.com/file/d/1mnFNCCUIRHpswS
+ B8zDrf9XZcatIRgtQd/view?usp=drive_link" class="pastedDriveLink-0">https://d
+ rive.google.com/file/d/1mnFNCCUIRHpswSB8zDrf9XZcatIRgtQd/view?usp=drive_lin
+ k</a>
+LAST-MODIFIED:20250624T234959Z
+LOCATION:Kletterwald Wetter\, Harkortberg\, 58300 Wetter (Ruhr)\, Deutschla
+ nd
+SEQUENCE:2
+STATUS:CONFIRMED
+SUMMARY:BTC Klettern Wetter
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR
