@@ -30,13 +30,15 @@ var CalendarWidget = (function () {
     return html;
   }
 
-  /* build ordered fallback src list for a flyer/attachment object */
+  /* build ordered fallback src list for a flyer/attachment object.
+     thumbnail works for public Drive files without auth cookies;
+     lh3 and uc?export=view need cookies and are unreliable in iframes. */
   function flyerSrcs(f) {
     return (f.dataUrl ? [f.dataUrl] : [
+      f.driveId ? 'https://drive.google.com/thumbnail?id=' + f.driveId + '&sz=w1200' : null,
+      f.driveId ? 'https://drive.usercontent.google.com/download?id=' + f.driveId + '&export=view' : null,
       f.driveId ? 'https://lh3.googleusercontent.com/d/' + f.driveId : null,
-      f.driveId ? 'https://drive.google.com/thumbnail?id=' + f.driveId + '&sz=w1000' : null,
-      f.driveId ? 'https://drive.google.com/uc?export=view&id=' + f.driveId : null,
-      f.url
+      f.url && f.url.indexOf('drive.google.com/open') < 0 ? f.url : null
     ]).filter(Boolean);
   }
 
@@ -68,7 +70,7 @@ var CalendarWidget = (function () {
       img.addEventListener('click', function () { window.open(att.url || img.src, '_blank'); });
 
       var srcs = flyerSrcs(att);
-      loadImg(img, srcs, 12000, function () {
+      loadImg(img, srcs, 6000, function () {
         var fb = document.createElement('a');
         fb.href = att.url || ''; fb.target = '_blank'; fb.rel = 'noopener';
         fb.className = 'cw-att-link'; fb.textContent = '🖼️ Bild öffnen';
@@ -241,7 +243,7 @@ var CalendarWidget = (function () {
       img.className = 'cw-flyer-img';
       img.alt = f.eventTitle || 'Flyer';
 
-      loadImg(img, flyerSrcs(f), 12000,
+      loadImg(img, flyerSrcs(f), 6000,
         function () { card.remove(); },
         function () {
           card.classList.add('cw-flyer-ready');
@@ -280,7 +282,7 @@ var CalendarWidget = (function () {
     img.className = 'cw-lb-img';
     img.alt = flyers[idx].eventTitle || 'Flyer';
     img.style.display = 'none';
-    loadImg(img, flyerSrcs(flyers[idx]), 15000,
+    loadImg(img, flyerSrcs(flyers[idx]), 8000,
       function () { lbSpinner.remove(); img.style.display = ''; },
       function () { lbSpinner.remove(); img.style.display = ''; }
     );
