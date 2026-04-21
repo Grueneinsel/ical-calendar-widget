@@ -338,7 +338,7 @@
   justify-content: center;
   gap: 8px;
 }
-#cw-status.cw-err { color: #dc2626; }
+#cw-status.cw-err { color: #dc2626; white-space: pre-line; display: block; text-align: left; }
 
 /* spinner */
 @keyframes cw-spin {
