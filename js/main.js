@@ -19,7 +19,7 @@
       var events = IcalParser.parse(text, { dev: devMode });
 
       var today = new Date(); today.setHours(0, 0, 0, 0);
-      var upcoming = events.filter(function (e) { return e.start >= today; });
+      var upcoming = devMode ? events : events.filter(function (e) { return e.start >= today; });
 
       var flyers = [];
       for (var i = 0; i < upcoming.length && flyers.length < 3; i++) {
