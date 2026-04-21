@@ -226,14 +226,18 @@ var CalendarWidget = (function () {
 
   /* ── flyer gallery ── */
   Widget.prototype.setFlyers = function (flyers) {
-    /* remove existing gallery on re-render */
+    /* cancel any in-flight lazy section from a previous render */
+    if (this._flyerSection) this._flyerSection._cancelled = true;
     var old = this.container.querySelector('.cw-flyers');
     if (old) old.remove();
+    this._flyerSection = null;
     if (!flyers || !flyers.length) return;
     var self = this;
 
     var section = document.createElement('div');
     section.className = 'cw-flyers';
+    section._cancelled = false;
+    this._flyerSection = section;
     var sectionInDom = false;
 
     flyers.forEach(function (f, idx) {
@@ -262,6 +266,7 @@ var CalendarWidget = (function () {
       loadImg(img, flyerSrcs(f), 6000,
         function () { card.remove(); },
         function () {
+          if (section._cancelled) return;
           card.classList.add('cw-flyer-ready');
           if (!sectionInDom) {
             self.container.insertBefore(section, self.$list);
