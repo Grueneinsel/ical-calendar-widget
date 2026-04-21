@@ -440,7 +440,10 @@ var CalendarWidget = (function () {
         var dayNums = [];
         var cur = new Date(ev.start);
         while (cur <= endD) {
-          dayNums.push('<div class="cw-day">' + cur.getDate() + '</div>');
+          dayNums.push(
+            '<div class="cw-day">' + cur.getDate() + '</div>' +
+            '<div class="cw-wd">'  + WDAYS_SHORT[cur.getDay()] + '</div>'
+          );
           cur.setDate(cur.getDate() + 1);
         }
         badgeHtml = dayNums.join('');
