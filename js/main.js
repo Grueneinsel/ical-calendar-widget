@@ -42,6 +42,8 @@
           var emailInDesc = !!(cfg.email && ev.desc && ev.desc.indexOf(cfg.email) >= 0);
           flyers.push(Object.assign({
             eventTitle: ev.title,
+            eventDesc:  ev.desc  || null,
+            eventStart: ev.start || null,
             anmeldenEmail: emailInDesc ? cfg.email : null
           }, atts[j]));
         }
