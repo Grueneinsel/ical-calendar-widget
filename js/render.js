@@ -381,9 +381,12 @@ var CalendarWidget = (function () {
       .sort(function (a, b) { return a.start - b.start; });
 
     if (dev) {
+      var source = opts && opts.source;
       var badge = document.createElement('div');
       badge.className = 'cw-dev-badge';
-      badge.textContent = 'DEV — alle Termine inkl. Vergangenheit';
+      badge.textContent = 'DEV — alle Termine inkl. Vergangenheit'
+        + (source === 'backup' ? ' · 📦 Backup (calendar.ics)' : '')
+        + (source === 'live'   ? ' · 🌐 Live (Google Calendar)' : '');
       this.$list.appendChild(badge);
     }
 

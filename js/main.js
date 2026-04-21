@@ -23,7 +23,7 @@
     }).observe(document.documentElement);
   }
 
-  function render(text) {
+  function render(text, source) {
     var events  = IcalParser.parse(text, { dev: devMode });
     var today   = new Date(); today.setHours(0, 0, 0, 0);
     var upcoming = devMode ? events : events.filter(function (e) { return e.start >= today; });
@@ -44,24 +44,24 @@
     }
 
     widget.setFlyers(flyers);
-    widget.setEvents(events, { dev: devMode });
+    widget.setEvents(events, { dev: devMode, source: source });
   }
 
   /* Phase 1: local backup — renders immediately if available */
   IcalParser.fetchLocal()
     .then(function (text) {
-      render(text);
+      render(text, 'backup');
       /* Phase 2: live URL in background — overwrites if newer data arrives */
       if (icalUrl) {
         IcalParser.fetchLive(icalUrl)
-          .then(render)
+          .then(function (t) { render(t, 'live'); })
           .catch(function () {});
       }
     })
     .catch(function () {
       /* No local backup — load live directly */
       IcalParser.fetch(icalUrl)
-        .then(render)
+        .then(function (t) { render(t, 'live'); })
         .catch(function (err) { widget.setError(err.message); });
     });
 })();
