@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iCal Kalender-Widget — Demo</title>
+<style>:root{--d-primary:#1a3664;--d-dark:#0f2244;--d-mid:#2756a6;--d-accent:#e8b423;--d-bg:#f4f6f9;--d-white:#ffffff;--d-text:#1a202c;--d-muted:#6b7280;--d-border:#d1d5db;--d-r:6px;--d-font:system-ui,-apple-system,'Segoe UI',sans-serif}body{margin:0;background:var(--d-bg);font-family:var(--d-font);color:var(--d-text)}.d-topbar{background:var(--d-dark);padding:6px 24px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.6)}.d-topbar a{color:var(--d-accent);text-decoration:none}.d-topbar a:hover{text-decoration:underline}.d-header{background:var(--d-primary);padding:0 24px;display:flex;align-items:center;gap:20px;box-shadow:0 2px 8px rgba(0,0,0,0.2)}.d-logo{display:flex;flex-direction:column;align-items:center;padding:16px 0;min-width:80px;text-decoration:none}.d-logo-circle{width:56px;height:56px;border-radius:50%;background:var(--d-accent);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:var(--d-primary);letter-spacing:-1px}.d-logo-text{font-size:10px;color:rgba(255,255,255,0.7);margin-top:4px;text-align:center;line-height:1.2}.d-site-title{flex:1}.d-site-title h1{font-size:20px;font-weight:800;color:#fff;letter-spacing:0.3px}.d-site-title p{font-size:12px;color:rgba(255,255,255,0.6);margin-top:2px}.d-nav{background:var(--d-mid);padding:0 24px;display:flex;gap:0;overflow-x:auto}.d-nav a{display:block;padding:12px 16px;font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);text-decoration:none;white-space:nowrap;transition:background 0.15s,color 0.15s;border-bottom:3px solid transparent}.d-nav a:hover,.d-nav a.active{color:#fff;background:rgba(0,0,0,0.15);border-bottom-color:var(--d-accent)}.d-container{max-width:1100px;margin:0 auto;padding:32px 24px;display:grid;grid-template-columns:1fr 340px;gap:32px;align-items:start}@media (max-width:760px){.d-container{grid-template-columns:1fr}}.d-card{background:var(--d-white);border-radius:var(--d-r);box-shadow:0 1px 4px rgba(0,0,0,0.08);overflow:hidden}.d-card-header{background:var(--d-primary);color:#fff;padding:10px 16px;font-size:14px;font-weight:700;letter-spacing:0.3px;display:flex;align-items:center;gap:8px}.d-card-header::before{content:'';display:block;width:3px;height:16px;background:var(--d-accent);border-radius:2px}.d-card-body{padding:20px}.d-widget-wrap{border-radius:var(--d-r);overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.13)}.d-widget-wrap iframe{display:block;width:100%;border:none;min-height:520px}.d-code-block{background:#1e293b;color:#e2e8f0;border-radius:var(--d-r);padding:14px 16px;font-family:'Consolas','SF Mono',monospace;font-size:12px;line-height:1.6;overflow-x:auto;margin-top:12px;position:relative}.d-code-block .kw{color:#93c5fd}.d-code-block .str{color:#86efac}.d-code-block .com{color:#64748b}.d-copy-btn{position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#e2e8f0;font-size:11px;padding:3px 8px;border-radius:4px;cursor:pointer;transition:background 0.15s}.d-copy-btn:hover{background:rgba(255,255,255,0.2)}.d-info-list{list-style:none}.d-info-list li{padding:8px 0;border-bottom:1px solid var(--d-border);font-size:13px;display:flex;align-items:flex-start;gap:8px}.d-info-list li:last-child{border-bottom:none}.d-info-list .icon{font-size:15px;flex-shrink:0;margin-top:1px}.d-footer{background:var(--d-dark);color:rgba(255,255,255,0.5);padding:20px 24px;text-align:center;font-size:12px;margin-top:40px}.d-footer a{color:var(--d-accent);text-decoration:none}</style>
+</head>
+<body>
+
+<div class="d-topbar">
+  <span>Kalender-Widget für Google Calendar &amp; iCal-Feeds</span>
+  <a href="https://github.com" target="_blank">GitHub ↗</a>
+</div>
+
+<header class="d-header">
+  <a class="d-logo" href="#">
+    <div class="d-logo-circle">BTC</div>
+    <div class="d-logo-text">Kalender<br>Widget</div>
+  </a>
+  <div class="d-site-title">
+    <h1>iCal Kalender-Widget</h1>
+    <p>Einbettbarer Kalender für Google Calendar &amp; beliebige iCal-Feeds</p>
+  </div>
+</header>
+
+<nav class="d-nav">
+  <a href="#demo" class="active">Demo</a>
+  <a href="#einbetten">Einbetten</a>
+  <a href="#features">Features</a>
+</nav>
+
+<div class="d-container">
+
+  <!-- Left: live widget -->
+  <div>
+    <div class="d-card" id="demo">
+      <div class="d-card-header">Live-Demo — BTC Jugend Kalender</div>
+      <div class="d-card-body" style="padding:0">
+        <div class="d-widget-wrap">
+          <iframe
+            id="cal-iframe"
+            src="widget.html?url=https%3A%2F%2Fcalendar.google.com%2Fcalendar%2Fical%2Fc77f5869d3e32b0381ec5ecc6a7d91b0b357ffe6a9cb989fc5f25bcf3b19dec8%2540group.calendar.google.com%2Fpublic%2Fbasic.ics"
+            title="Kalender"
+            loading="lazy">
+          </iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- Embed instructions -->
+    <div class="d-card" id="einbetten" style="margin-top:24px">
+      <div class="d-card-header">Einbetten — iframe</div>
+      <div class="d-card-body">
+        <p style="font-size:13px;margin-bottom:8px">Füge diesen Code in deine Webseite ein (z.&thinsp;B. in WordPress via HTML-Block):</p>
+        <div class="d-code-block" id="code-iframe">
+<button class="d-copy-btn" onclick="copyCode('code-iframe')">Kopieren</button><span class="com">&lt;!-- iCal Kalender-Widget --&gt;</span>
+<span class="kw">&lt;iframe</span>
+  <span class="str">src</span>=<span class="str">"https://DEIN-GITHUB-NAME.github.io/ical-calendar-widget/widget.html?url=DEINE-ICS-URL"</span>
+  <span class="str">width</span>=<span class="str">"100%"</span>
+  <span class="str">height</span>=<span class="str">"600"</span>
+  <span class="str">style</span>=<span class="str">"border:none;border-radius:6px"</span>
+  <span class="str">loading</span>=<span class="str">"lazy"</span>
+  <span class="str">title</span>=<span class="str">"Kalender"</span>
+<span class="kw">&gt;&lt;/iframe&gt;</span></div>
+
+        <div style="margin-top:20px">
+          <p style="font-size:13px;font-weight:600;margin-bottom:4px">Deine ICS-URL (Google Calendar):</p>
+          <p style="font-size:12px;color:#6b7280;margin-bottom:8px">
+            In Google Calendar → Einstellungen → Kalender → &bdquo;Privatadresse im iCal-Format&ldquo;
+          </p>
+          <div class="d-code-block">
+<button class="d-copy-btn" onclick="copyCode(this.parentElement)">Kopieren</button>https://calendar.google.com/calendar/ical/<span class="str">KALENDER-ID</span>/public/basic.ics</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: sidebar -->
+  <div>
+    <div class="d-card" id="features">
+      <div class="d-card-header">Features</div>
+      <div class="d-card-body" style="padding:12px 16px">
+        <ul class="d-info-list">
+          <li><span class="icon">📅</span> Monatsansicht mit Navigations-Pfeilen</li>
+          <li><span class="icon">🔵</span> Ereignis-Punkte auf Kalendertagen</li>
+          <li><span class="icon">🗂️</span> Nächste Termine als Standardansicht</li>
+          <li><span class="icon">🔁</span> Wiederkehrende Termine (RRULE)</li>
+          <li><span class="icon">📍</span> Orte verlinkt mit OpenStreetMap</li>
+          <li><span class="icon">❌</span> Abgesagte Termine markiert</li>
+          <li><span class="icon">🌐</span> CORS-Proxy-Fallback (kein Server nötig)</li>
+          <li><span class="icon">📱</span> Vollständig responsiv</li>
+          <li><span class="icon">⚡</span> Kein Framework — reines HTML/CSS/JS</li>
+          <li><span class="icon">🎨</span> Farben per CSS-Variablen anpassbar</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="d-card" style="margin-top:16px">
+      <div class="d-card-header">Anpassen</div>
+      <div class="d-card-body">
+        <p style="font-size:13px;margin-bottom:8px">CSS-Farben im iframe per URL-Parameter überschreiben (geplant) oder einfach den Fork anpassen:</p>
+        <div class="d-code-block" style="font-size:11px">
+<span class="com">/* css/widget.css */</span>
+<span class="kw">:root</span> {
+  <span class="str">--cw-primary</span>: #1a3664;   <span class="com">/* Dunkelblau */</span>
+  <span class="str">--cw-accent</span>:  #e8b423;   <span class="com">/* Gold */</span>
+}</div>
+      </div>
+    </div>
+
+    <div class="d-card" style="margin-top:16px">
+      <div class="d-card-header">Test-ICS-URL</div>
+      <div class="d-card-body">
+        <p style="font-size:12px;color:#6b7280;margin-bottom:8px">BTC Jugend Herne — öffentlicher Kalender:</p>
+        <div class="d-code-block" style="font-size:10px;word-break:break-all">
+https://calendar.google.com/calendar/ical/c77f5869d3e32b0381ec5ecc6a7d91b0b357ffe6a9cb989fc5f25bcf3b19dec8%40group.calendar.google.com/public/basic.ics</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="d-footer">
+  <p>iCal Kalender-Widget &mdash; Open Source auf <a href="https://github.com" target="_blank">GitHub</a> &mdash; GitHub Pages</p>
+</footer>
+
+<script>
+function copyCode(el) {
+  var block = typeof el === 'string' ? document.getElementById(el) : el;
+  var text  = block.textContent.replace(/Kopieren\s*/, '').trim();
+  navigator.clipboard.writeText(text).then(function () {
+    var btn = block.querySelector('.d-copy-btn');
+    if (btn) { btn.textContent = 'Kopiert!'; setTimeout(function(){ btn.textContent='Kopieren'; }, 1500); }
+  });
+}
+
+/* Auto-resize iframe height based on content */
+var iframe = document.getElementById('cal-iframe');
+window.addEventListener('message', function (e) {
+  if (e.data && e.data.type === 'cw-resize') {
+    iframe.style.height = (e.data.height + 2) + 'px';
+  }
+});
+</script>
+</body>
+</html>
