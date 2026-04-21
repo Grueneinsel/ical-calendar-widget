@@ -4,7 +4,7 @@
 (function () {
   var cfg      = (typeof CW_CONFIG !== 'undefined') ? CW_CONFIG : {};
   var params   = new URLSearchParams(location.search);
-  var icalUrl  = params.get('url')   || cfg.calendarUrl || '';
+  var icalUrl  = params.get('url') || (params.has('btc') ? cfg.calendarUrl : '') || '';
   cfg.email    = params.get('email') || cfg.email       || '';
   var devMode  = params.has('dev');
   var widget   = new CalendarWidget(document.getElementById('cw-root'));

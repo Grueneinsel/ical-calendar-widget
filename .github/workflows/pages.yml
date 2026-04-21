@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   schedule:
-    - cron: '0 * * * *'   # stündlich neu bauen + deployen
+    - cron: '0 * * * *'   # stündlich ICS holen + deployen
   push:
     branches: [main]
   workflow_dispatch:
@@ -26,10 +26,14 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Fetch ICS
+        env:
+          CALENDAR_URL: ${{ secrets.CALENDAR_URL }}
         run: |
-          curl -fsSL \
-            "https://calendar.google.com/calendar/ical/c77f5869d3e32b0381ec5ecc6a7d91b0b357ffe6a9cb989fc5f25bcf3b19dec8@group.calendar.google.com/public/basic.ics" \
-            -o dist/calendar.ics
+          if [ -n "$CALENDAR_URL" ]; then
+            curl -fsSL "$CALENDAR_URL" -o dist/calendar.ics
+          else
+            echo "WARN: Secret CALENDAR_URL not set — skipping ICS fetch"
+          fi
 
       - name: Build
         run: python3 bundler.py
