@@ -346,7 +346,7 @@
 }
 .cw-flyer-card {
   position: relative;
-  width: min(240px, calc(33.33% - 5px));
+  width: 240px;
   aspect-ratio: 210 / 297;
   border-radius: 4px;
   overflow: hidden;
@@ -381,6 +381,9 @@
   transition: opacity 0.15s;
 }
 .cw-flyer-card:hover .cw-flyer-label { opacity: 1; }
+@media (max-width: 600px) {
+  .cw-flyer-card { width: 100%; }
+}
 
 /* ── lightbox ── */
 .cw-lb-overlay {
