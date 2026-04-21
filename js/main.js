@@ -9,11 +9,6 @@
   var devMode  = params.has('dev');
   var widget   = new CalendarWidget(document.getElementById('cw-root'));
 
-  if (!icalUrl) {
-    widget.setError('Kein Kalender angegeben. Bitte ?url=\u2026 Parameter setzen.');
-    return;
-  }
-
   IcalParser.fetch(icalUrl)
     .then(function (text) {
       var events = IcalParser.parse(text, { dev: devMode });

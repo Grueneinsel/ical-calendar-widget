@@ -320,7 +320,9 @@ var IcalParser = (function () {
     }
 
     return tryLocal().then(function (local) {
-      return local !== null ? local : tryNext(0);
+      if (local !== null) return local;
+      if (!url) return Promise.reject(new Error('Kalender konnte nicht geladen werden.'));
+      return tryNext(0);
     });
   }
 

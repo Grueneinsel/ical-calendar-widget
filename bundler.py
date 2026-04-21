@@ -23,7 +23,7 @@ except ImportError:
 ROOT    = Path(__file__).parent.resolve()
 OUT_DIR = ROOT / "dist"
 
-ENTRIES = ["widget.html"]
+ENTRIES = ["widget.html", "index.html"]
 
 LINK_RE   = re.compile(r"""<link\b([^>]*?)\brel\s*=\s*["']stylesheet["']([^>]*?)>""", re.IGNORECASE)
 HREF_RE   = re.compile(r"""href\s*=\s*["']([^"']+)["']""", re.IGNORECASE)
