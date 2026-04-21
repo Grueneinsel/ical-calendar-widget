@@ -20,14 +20,20 @@ def main():
         )
         time.sleep(2)
 
-        url = f"http://localhost:{PORT}/dist/widget.html?url=https%3A%2F%2Fcalendar.google.com%2Fcalendar%2Fical%2Fc77f5869d3e32b0381ec5ecc6a7d91b0b357ffe6a9cb989fc5f25bcf3b19dec8%2540group.calendar.google.com%2Fpublic%2Fbasic.ics"
-        webbrowser.open(url)
+        DEV_URL = (
+            f"http://localhost:{PORT}/dist/widget.html"
+            f"?url=https%3A%2F%2Fcalendar.google.com%2Fcalendar%2Fical%2F"
+            f"c77f5869d3e32b0381ec5ecc6a7d91b0b357ffe6a9cb989fc5f25bcf3b19dec8"
+            f"%2540group.calendar.google.com%2Fpublic%2Fbasic.ics"
+            f"&dev"
+        )
+        webbrowser.open(DEV_URL)
 
         server = subprocess.Popen(
             [sys.executable, "-m", "http.server", str(PORT)],
             cwd=str(ROOT)
         )
-        print(f"Widget:  http://localhost:{PORT}/dist/widget.html?url=DEINE-ICS-URL")
+        print(f"Dev-URL: {DEV_URL}")
         print("Quellen: Dateien in css/ und js/ direkt bearbeiten")
         print("Drücke Ctrl+C zum Beenden.")
         server.wait()
