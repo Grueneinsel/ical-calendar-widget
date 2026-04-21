@@ -512,6 +512,7 @@
   padding: 8px 16px 16px;
 }
 .cw-lb-img-wrap {
+  width: max-content;
   min-width: 100%;
   min-height: 100%;
   display: flex;

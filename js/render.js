@@ -320,24 +320,11 @@ var CalendarWidget = (function () {
     var rightBtns = document.createElement('div');
     rightBtns.className = 'cw-lb-topbar-right';
 
-    /* zoom toggle */
-    var zoomed = false;
-    var zoomBtn = document.createElement('button');
-    zoomBtn.className = 'cw-lb-zoom';
-    zoomBtn.title = 'Zoom';
-    zoomBtn.innerHTML = '🔍';
-    zoomBtn.addEventListener('click', function () {
-      zoomed = !zoomed;
-      img.classList.toggle('cw-lb-img-zoom', zoomed);
-      zoomBtn.innerHTML = zoomed ? '🔎' : '🔍';
-    });
-
     var close = document.createElement('button');
     close.className = 'cw-lb-close';
     close.innerHTML = '×';
     close.addEventListener('click', closeOverlay);
 
-    rightBtns.appendChild(zoomBtn);
     rightBtns.appendChild(close);
     topBar.appendChild(rightBtns);
     overlay.appendChild(topBar);
@@ -364,6 +351,38 @@ var CalendarWidget = (function () {
     lbBody.appendChild(lbSpinner);
     lbBody.appendChild(imgWrap);
     overlay.appendChild(lbBody);
+
+    /* ── pinch-to-zoom ── */
+    var pzBaseW = null, pzStartDist = null, pzStartW = null;
+    function pzDist(t) {
+      return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+    }
+    lbBody.addEventListener('touchstart', function (e) {
+      if (e.touches.length === 2) {
+        if (!pzBaseW) pzBaseW = img.offsetWidth;
+        pzStartDist = pzDist(e.touches);
+        pzStartW    = img.offsetWidth;
+        e.preventDefault();
+      }
+    }, { passive: false });
+    lbBody.addEventListener('touchmove', function (e) {
+      if (e.touches.length === 2 && pzStartDist) {
+        var newW = Math.max(pzBaseW, Math.min(pzStartW * pzDist(e.touches) / pzStartDist, pzBaseW * 5));
+        img.style.maxWidth  = 'none';
+        img.style.maxHeight = 'none';
+        img.style.width     = newW + 'px';
+        e.preventDefault();
+      }
+    }, { passive: false });
+    lbBody.addEventListener('touchend', function (e) {
+      if (e.touches.length < 2) {
+        pzStartDist = null;
+        if (pzBaseW && img.offsetWidth <= pzBaseW + 10) {
+          img.style.width = img.style.maxWidth = img.style.maxHeight = '';
+          pzBaseW = null;
+        }
+      }
+    });
 
     overlay.addEventListener('click', function (e) {
       if (e.target === overlay) closeOverlay();
