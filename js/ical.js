@@ -281,6 +281,18 @@ var IcalParser = (function () {
 
   /* ── CORS-aware fetch ── */
   function fetchCalendar(url) {
+    /* First try the cached same-origin copy (no CORS needed) */
+    function tryLocal() {
+      return fetch('./calendar.ics', { signal: AbortSignal.timeout(4000) })
+        .then(function (r) {
+          if (!r.ok) return null;
+          return r.text().then(function (t) {
+            return t.indexOf('BEGIN:VCALENDAR') >= 0 ? t : null;
+          });
+        })
+        .catch(function () { return null; });
+    }
+
     /* normalise: decode any stray %40 → @ so Google Calendar accepts the URL */
     try { url = decodeURIComponent(url); } catch (e) {}
 
@@ -307,7 +319,9 @@ var IcalParser = (function () {
         .catch(function () { return tryNext(idx + 1); });
     }
 
-    return tryNext(0);
+    return tryLocal().then(function (local) {
+      return local !== null ? local : tryNext(0);
+    });
   }
 
   /* public API */
