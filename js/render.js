@@ -371,20 +371,21 @@ var CalendarWidget = (function () {
     }, { passive: false });
     lbBody.addEventListener('touchmove', function (e) {
       if (e.touches.length === 2 && pzStartDist) {
-        var newW = Math.max(pzBaseW, Math.min(pzStartW * pzDist(e.touches) / pzStartDist, pzBaseW * 5));
-        img.style.maxWidth  = 'none';
-        img.style.maxHeight = 'none';
-        img.style.width     = newW + 'px';
+        var newW = pzStartW * pzDist(e.touches) / pzStartDist;
+        if (newW <= pzBaseW) {
+          img.style.width = img.style.maxWidth = img.style.maxHeight = '';
+        } else {
+          img.style.maxWidth  = 'none';
+          img.style.maxHeight = 'none';
+          img.style.width     = Math.min(newW, pzBaseW * 5) + 'px';
+        }
         e.preventDefault();
       }
     }, { passive: false });
     lbBody.addEventListener('touchend', function (e) {
       if (e.touches.length < 2) {
         pzStartDist = null;
-        if (pzBaseW && img.offsetWidth <= pzBaseW + 10) {
-          img.style.width = img.style.maxWidth = img.style.maxHeight = '';
-          pzBaseW = null;
-        }
+        if (!img.style.width) pzBaseW = null;
       }
     });
 
