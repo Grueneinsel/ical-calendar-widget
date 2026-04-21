@@ -30,6 +30,32 @@ var CalendarWidget = (function () {
     return html;
   }
 
+  /* build ordered fallback src list for a flyer/attachment object */
+  function flyerSrcs(f) {
+    return (f.dataUrl ? [f.dataUrl] : [
+      f.driveId ? 'https://lh3.googleusercontent.com/d/' + f.driveId : null,
+      f.driveId ? 'https://drive.google.com/thumbnail?id=' + f.driveId + '&sz=w1000' : null,
+      f.driveId ? 'https://drive.google.com/uc?export=view&id=' + f.driveId : null,
+      f.url
+    ]).filter(Boolean);
+  }
+
+  /* Load img through a fallback-src list. Moves to next src after timeoutMs
+     or on error. Calls onLoaded() on first success, onAllFailed() if exhausted. */
+  function loadImg(img, srcs, timeoutMs, onAllFailed, onLoaded) {
+    var tried = 0;
+    var timer = null;
+    function attempt() {
+      if (timer) clearTimeout(timer);
+      if (tried >= srcs.length) { if (onAllFailed) onAllFailed(); return; }
+      img.onload  = function () { clearTimeout(timer); if (onLoaded) onLoaded(); };
+      img.onerror = function () { clearTimeout(timer); tried++; attempt(); };
+      img.src = srcs[tried];
+      timer = setTimeout(function () { tried++; attempt(); }, timeoutMs);
+    }
+    if (srcs.length) attempt();
+  }
+
   /* ── attachment renderer ── */
   function renderAttachment(att) {
     var wrap = document.createElement('div');
@@ -41,27 +67,13 @@ var CalendarWidget = (function () {
       img.className = 'cw-att-img';
       img.addEventListener('click', function () { window.open(att.url || img.src, '_blank'); });
 
-      /* fallback chain: lh3 CDN → thumbnail → uc?export=view → link button */
-      var tried = 0;
-      var srcs = att.dataUrl ? [att.dataUrl] : [
-        att.driveId ? 'https://lh3.googleusercontent.com/d/' + att.driveId : null,
-        att.driveId ? 'https://drive.google.com/thumbnail?id=' + att.driveId + '&sz=w1000' : null,
-        att.driveId ? 'https://drive.google.com/uc?export=view&id=' + att.driveId : null,
-        att.url
-      ].filter(Boolean);
-
-      img.src = srcs[0] || '';
-      img.onerror = function () {
-        tried++;
-        if (tried < srcs.length) {
-          img.src = srcs[tried];
-        } else {
-          var fb = document.createElement('a');
-          fb.href = att.url || ''; fb.target = '_blank'; fb.rel = 'noopener';
-          fb.className = 'cw-att-link'; fb.textContent = '\uD83D\uDDBC\uFE0F Bild öffnen';
-          wrap.replaceChild(fb, img);
-        }
-      };
+      var srcs = flyerSrcs(att);
+      loadImg(img, srcs, 12000, function () {
+        var fb = document.createElement('a');
+        fb.href = att.url || ''; fb.target = '_blank'; fb.rel = 'noopener';
+        fb.className = 'cw-att-link'; fb.textContent = '🖼️ Bild öffnen';
+        wrap.replaceChild(fb, img);
+      });
       wrap.appendChild(img);
 
     } else if (att.type === 'pdf') {
@@ -78,9 +90,9 @@ var CalendarWidget = (function () {
         card.className = 'cw-att-pdf-card';
         var fname = att.filename || att.url.split('/').pop().split('?')[0] || 'Dokument';
         card.innerHTML =
-          '<span class="cw-att-pdf-icon">\uD83D\uDCC4</span>' +
+          '<span class="cw-att-pdf-icon">📄</span>' +
           '<span class="cw-att-pdf-label">' + esc(fname) + '</span>' +
-          '<span class="cw-att-pdf-open">Öffnen \u2197</span>';
+          '<span class="cw-att-pdf-open">Öffnen ↗</span>';
         wrap.appendChild(card);
       }
 
@@ -90,7 +102,7 @@ var CalendarWidget = (function () {
       fileLink.target    = '_blank';
       fileLink.rel       = 'noopener';
       fileLink.className = 'cw-att-link';
-      fileLink.textContent = '\uD83D\uDCCE Anhang öffnen';
+      fileLink.textContent = '📎 Anhang öffnen';
       wrap.appendChild(fileLink);
     }
 
@@ -152,16 +164,6 @@ var CalendarWidget = (function () {
     return null;
   }
 
-  /* build ordered fallback src list for a flyer/attachment object */
-  function flyerSrcs(f) {
-    return (f.dataUrl ? [f.dataUrl] : [
-      f.driveId ? 'https://lh3.googleusercontent.com/d/' + f.driveId : null,
-      f.driveId ? 'https://drive.google.com/thumbnail?id=' + f.driveId + '&sz=w1000' : null,
-      f.driveId ? 'https://drive.google.com/uc?export=view&id=' + f.driveId : null,
-      f.url
-    ]).filter(Boolean);
-  }
-
   /* last inclusive day (iCal DTEND for all-day events is exclusive) */
   function lastInclusiveDay(ev) {
     if (!ev.end) return null;
@@ -183,10 +185,10 @@ var CalendarWidget = (function () {
   function Widget(container) {
     this.container = container;
     container.classList.add('cw-container');
-    container.innerHTML = '<div id="cw-list"></div><div class="cw-disclaimer">Alle Angaben ohne Gew\u00e4hr \u2013 Irrt\u00fcmer vorbehalten.</div>';
+    container.innerHTML = '<div id="cw-list"></div><div class="cw-disclaimer">Alle Angaben ohne Gewähr – Irrtümer vorbehalten.</div>';
     this.$list   = container.querySelector('#cw-list');
     this.$status = null;
-    this._showStatus('Termine werden geladen\u2026');
+    this._showStatus('Termine werden geladen…');
   }
 
   Widget.prototype._showStatus = function (msg, isErr) {
@@ -195,8 +197,12 @@ var CalendarWidget = (function () {
       this.$status.id = 'cw-status';
       this.$list.appendChild(this.$status);
     }
-    this.$status.textContent = msg;
-    this.$status.className   = isErr ? 'cw-err' : '';
+    this.$status.className = isErr ? 'cw-err' : '';
+    if (!isErr) {
+      this.$status.innerHTML = '<div class="cw-spinner"></div><span>' + msg + '</span>';
+    } else {
+      this.$status.textContent = msg;
+    }
   };
 
   Widget.prototype.setError = function (msg) {
@@ -230,21 +236,14 @@ var CalendarWidget = (function () {
         card.appendChild(label);
       }
 
-      var srcs = flyerSrcs(f);
       var img = document.createElement('img');
       img.className = 'cw-flyer-img';
       img.alt = f.eventTitle || 'Flyer';
-      img.loading = 'lazy';
-      var tried = 0;
-      img.src = srcs[0] || '';
-      img.onerror = function () {
-        tried++;
-        if (tried < srcs.length) {
-          img.src = srcs[tried];
-        } else {
-          card.style.display = 'none';
-        }
-      };
+      card.classList.add('cw-img-loading');
+      loadImg(img, flyerSrcs(f), 12000,
+        function () { card.style.display = 'none'; },
+        function () { card.classList.remove('cw-img-loading'); }
+      );
 
       card.appendChild(img);
       section.appendChild(card);
@@ -266,21 +265,23 @@ var CalendarWidget = (function () {
 
     var close = document.createElement('button');
     close.className = 'cw-lb-close';
-    close.innerHTML = '\u00d7';
+    close.innerHTML = '×';
     close.addEventListener('click', closeOverlay);
 
-    var srcs = flyerSrcs(flyers[idx]);
+    var lbSpinner = document.createElement('div');
+    lbSpinner.className = 'cw-lb-spinner';
+
     var img = document.createElement('img');
     img.className = 'cw-lb-img';
     img.alt = flyers[idx].eventTitle || 'Flyer';
-    var tried = 0;
-    img.src = srcs[0] || '';
-    img.onerror = function () {
-      tried++;
-      if (tried < srcs.length) img.src = srcs[tried];
-    };
+    img.style.display = 'none';
+    loadImg(img, flyerSrcs(flyers[idx]), 15000,
+      function () { lbSpinner.remove(); img.style.display = ''; },
+      function () { lbSpinner.remove(); img.style.display = ''; }
+    );
 
     overlay.appendChild(close);
+    overlay.appendChild(lbSpinner);
     overlay.appendChild(img);
 
     var f = flyers[idx];
@@ -289,7 +290,7 @@ var CalendarWidget = (function () {
       mailBtn.className = 'cw-lb-mail';
       mailBtn.href = 'mailto:' + f.anmeldenEmail +
         '?subject=' + encodeURIComponent(f.eventTitle || '');
-      mailBtn.textContent = '\u2709 Anmelden';
+      mailBtn.textContent = '✉ Anmelden';
       mailBtn.target = '_blank';
       overlay.appendChild(mailBtn);
     }
@@ -371,7 +372,7 @@ var CalendarWidget = (function () {
         var endD = lastInclusiveDay(ev);
         var toLabel = endD.getDate() + '.';
         if (endD.getMonth() !== ev.start.getMonth()) toLabel += (endD.getMonth() + 1) + '.';
-        badgeHtml += '<div class="cw-day-to">\u2192' + toLabel + '</div>';
+        badgeHtml += '<div class="cw-day-to">→' + toLabel + '</div>';
       }
       date.innerHTML = badgeHtml;
 
@@ -404,7 +405,7 @@ var CalendarWidget = (function () {
       if (deadline) {
         var dlEl = document.createElement('div');
         dlEl.className = 'cw-deadline';
-        dlEl.textContent = '\u23F0 Anmeldeschluss: ' +
+        dlEl.textContent = '⏰ Anmeldeschluss: ' +
           deadline.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
         body.appendChild(dlEl);
       }
@@ -420,22 +421,22 @@ var CalendarWidget = (function () {
           var endTime = ev.end.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
           if (multiDay) {
             var endDateFmt = ev.end.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
-            timeStr = startTime + ' \u2013 ' + endDateFmt + ', ' + endTime;
+            timeStr = startTime + ' – ' + endDateFmt + ', ' + endTime;
           } else {
-            timeStr = startTime + '\u2013' + endTime;
+            timeStr = startTime + '–' + endTime;
           }
         } else {
           timeStr = startTime;
         }
         var ts = document.createElement('span');
-        ts.textContent = '\uD83D\uDD52 ' + timeStr;
+        ts.textContent = '🕒 ' + timeStr;
         meta.appendChild(ts);
       } else if (multiDay) {
         var endDay = lastInclusiveDay(ev);
         var endStr = endDay.getDate() + '. ' + MONTHS[endDay.getMonth()];
         if (endDay.getFullYear() !== ev.start.getFullYear()) endStr += ' ' + endDay.getFullYear();
         var tsMd = document.createElement('span');
-        tsMd.textContent = '\uD83D\uDCC5 bis ' + endStr;
+        tsMd.textContent = '📅 bis ' + endStr;
         meta.appendChild(tsMd);
       }
 
@@ -493,11 +494,11 @@ var CalendarWidget = (function () {
 
         var infoToggle = document.createElement('button');
         infoToggle.className = 'cw-desc-toggle';
-        infoToggle.textContent = 'Info \u25be';
+        infoToggle.textContent = 'Info ▾';
         infoToggle.addEventListener('click', function (e) {
           e.stopPropagation();
           var open = infoPanel.classList.toggle('cw-info-panel-open');
-          infoToggle.textContent = open ? 'Info \u25b4' : 'Info \u25be';
+          infoToggle.textContent = open ? 'Info ▴' : 'Info ▾';
         });
 
         actionsBar.appendChild(infoToggle);
@@ -513,7 +514,7 @@ var CalendarWidget = (function () {
         mailBtn.className = 'cw-mail-btn';
         mailBtn.href = 'mailto:' + evCfg.email +
           '?subject=' + encodeURIComponent(ev.title || '');
-        mailBtn.textContent = '\u2709 Anmelden';
+        mailBtn.textContent = '✉ Anmelden';
         mailBtn.target = '_blank';
         mailBtn.addEventListener('click', function (e) { e.stopPropagation(); });
         actionsBar.appendChild(mailBtn);
