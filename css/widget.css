@@ -508,16 +508,21 @@
 }
 .cw-lb-body {
   flex: 1;
+  min-height: 0;
   overflow: auto;
   padding: 8px 16px 16px;
 }
 .cw-lb-img-wrap {
-  width: max-content;
   min-width: 100%;
-  min-height: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.cw-lb-img-wrap.cw-lb-scrollable {
+  width: max-content;
+  height: auto;
+  min-height: 100%;
 }
 .cw-lb-img {
   max-width: 100%;
@@ -526,7 +531,6 @@
   box-shadow: 0 8px 40px #000;
   object-fit: contain;
   display: block;
-  cursor: zoom-in;
 }
 .cw-lb-img-zoom {
   max-width: none;

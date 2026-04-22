@@ -374,10 +374,12 @@ var CalendarWidget = (function () {
       zoomSlider.value = pct;
       if (pct === 100) {
         img.style.width = img.style.maxWidth = img.style.maxHeight = '';
+        imgWrap.classList.remove('cw-lb-scrollable');
       } else {
         img.style.maxWidth  = 'none';
         img.style.maxHeight = 'none';
         img.style.width     = (pzNaturalW * pct / 100) + 'px';
+        imgWrap.classList.add('cw-lb-scrollable');
       }
     }
 
