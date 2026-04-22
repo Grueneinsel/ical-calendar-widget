@@ -457,6 +457,29 @@
   transform: translateY(-3px) scale(1.03);
   box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
+.cw-flyer-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.35) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  transform: skewX(-15deg);
+  pointer-events: none;
+}
+.cw-flyer-card.cw-flyer-ready:hover::after {
+  animation: cw-shine 0.55s ease-in-out;
+}
+@keyframes cw-shine {
+  from { left: -80%; }
+  to   { left: 130%; }
+}
 .cw-flyer-img {
   display: block;
   width: 100%;
