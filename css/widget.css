@@ -29,8 +29,6 @@
 /* ── list shell ── */
 #cw-list {
   background: var(--white);
-  border-radius: 6px;
-  overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
