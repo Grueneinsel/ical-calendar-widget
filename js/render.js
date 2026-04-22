@@ -434,7 +434,7 @@ var CalendarWidget = (function () {
   /* ── main render ── */
   Widget.prototype.setEvents = function (events, opts) {
     this.$list.innerHTML = '';
-
+    var self = this;
     var dev   = opts && opts.dev;
     var today = new Date(); today.setHours(0, 0, 0, 0);
 
