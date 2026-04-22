@@ -556,6 +556,13 @@
   text-decoration: none;
   transform: scale(1.04);
 }
+.cw-lb-zoom-slider {
+  width: 80px;
+  accent-color: #fff;
+  cursor: pointer;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
 .cw-lb-zoom {
   background: #fff;
   border: none;

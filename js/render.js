@@ -321,6 +321,15 @@ var CalendarWidget = (function () {
       topBar.appendChild(mailBtn);
     }
 
+    /* ── zoom slider ── */
+    var zoomSlider = document.createElement('input');
+    zoomSlider.type = 'range';
+    zoomSlider.min = '25';
+    zoomSlider.max = '400';
+    zoomSlider.value = '100';
+    zoomSlider.className = 'cw-lb-zoom-slider';
+    zoomSlider.title = 'Zoom';
+
     var rightBtns = document.createElement('div');
     rightBtns.className = 'cw-lb-topbar-right';
 
@@ -329,6 +338,7 @@ var CalendarWidget = (function () {
     close.innerHTML = '×';
     close.addEventListener('click', closeOverlay);
 
+    rightBtns.appendChild(zoomSlider);
     rightBtns.appendChild(close);
     topBar.appendChild(rightBtns);
     overlay.appendChild(topBar);
@@ -341,9 +351,10 @@ var CalendarWidget = (function () {
     img.className = 'cw-lb-img';
     img.alt = f.eventTitle || 'Flyer';
     img.style.display = 'none';
+    var pzNaturalW = null;
     loadImg(img, flyerSrcs(flyers[idx]), 8000,
       function () { lbSpinner.remove(); img.style.display = ''; },
-      function () { lbSpinner.remove(); img.style.display = ''; }
+      function () { lbSpinner.remove(); img.style.display = ''; pzNaturalW = img.offsetWidth; }
     );
 
     var imgWrap = document.createElement('div');
@@ -356,14 +367,30 @@ var CalendarWidget = (function () {
     lbBody.appendChild(imgWrap);
     overlay.appendChild(lbBody);
 
-    /* ── pinch-to-zoom ── */
-    var pzBaseW = null, pzStartDist = null, pzStartW = null;
-    function pzDist(t) {
-      return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+    /* ── zoom logic (slider + pinch) ── */
+    function applyZoom(pct) {
+      if (!pzNaturalW) pzNaturalW = img.offsetWidth;
+      pct = Math.max(25, Math.min(400, pct));
+      zoomSlider.value = pct;
+      if (pct === 100) {
+        img.style.width = img.style.maxWidth = img.style.maxHeight = '';
+      } else {
+        img.style.maxWidth  = 'none';
+        img.style.maxHeight = 'none';
+        img.style.width     = (pzNaturalW * pct / 100) + 'px';
+      }
     }
+
+    zoomSlider.addEventListener('input', function () {
+      applyZoom(parseInt(this.value));
+    });
+
+    var pzStartDist = null, pzStartW = null;
+    function pzDist(t) { return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY); }
+
     lbBody.addEventListener('touchstart', function (e) {
       if (e.touches.length === 2) {
-        if (!pzBaseW) pzBaseW = img.offsetWidth;
+        if (!pzNaturalW) pzNaturalW = img.offsetWidth;
         pzStartDist = pzDist(e.touches);
         pzStartW    = img.offsetWidth;
         e.preventDefault();
@@ -372,21 +399,12 @@ var CalendarWidget = (function () {
     lbBody.addEventListener('touchmove', function (e) {
       if (e.touches.length === 2 && pzStartDist) {
         var newW = pzStartW * pzDist(e.touches) / pzStartDist;
-        if (newW <= pzBaseW) {
-          img.style.width = img.style.maxWidth = img.style.maxHeight = '';
-        } else {
-          img.style.maxWidth  = 'none';
-          img.style.maxHeight = 'none';
-          img.style.width     = Math.min(newW, pzBaseW * 5) + 'px';
-        }
+        applyZoom(Math.round(newW / pzNaturalW * 100));
         e.preventDefault();
       }
     }, { passive: false });
     lbBody.addEventListener('touchend', function (e) {
-      if (e.touches.length < 2) {
-        pzStartDist = null;
-        if (!img.style.width) pzBaseW = null;
-      }
+      if (e.touches.length < 2) pzStartDist = null;
     });
 
     overlay.addEventListener('click', function (e) {
