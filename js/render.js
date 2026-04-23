@@ -477,10 +477,13 @@ var CalendarWidget = (function () {
       'T' + p(d.getUTCHours()) + p(d.getUTCMinutes()) + p(d.getUTCSeconds()) + 'Z';
   }
   function downloadEventIcs(ev) {
+    var now = new Date();
     var lines = [
-      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Calendar Widget//DE',
+      'BEGIN:VCALENDAR', 'VERSION:2.0', 'CALSCALE:GREGORIAN',
+      'PRODID:-//Calendar Widget//DE',
       'BEGIN:VEVENT',
       'UID:' + (ev.uid || ('cw-' + Date.now())) + '@cw',
+      'DTSTAMP:' + toIcsDt(now, false),
       'SUMMARY:' + icsEsc(ev.title),
       'DTSTART' + (ev.allDay ? ';VALUE=DATE:' : ':') + toIcsDt(ev.start, ev.allDay)
     ];
