@@ -25,9 +25,17 @@ var CalendarWidget = (function () {
 
   /* Render description as HTML, stripping only dangerous elements/attributes */
   function sanitizeDesc(html) {
-    /* plain text (no tags) → convert newlines to <br> */
+    /* plain text (no tags) → convert newlines and auto-link URLs + emails */
     if (html.indexOf('<') === -1) {
-      return html.replace(/\n/g, '<br>');
+      return html.replace(/\n/g, '<br>').replace(
+        /(https?:\/\/[^\s<>"]+)|([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})|(\+49[\s\-.]?[\d][\d\s\-.]{5,}|\(?\b0\d{2,4}\)?[\s\-./]?\d{3}[\d\s\-.]*)/g,
+        function (m, url, email, phone) {
+          if (url)   return '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + url + '</a>';
+          if (email) return '<a href="mailto:' + email + '">' + email + '</a>';
+          var tel = phone.replace(/[^\d+]/g, '');
+          return '<a href="tel:' + tel + '">' + phone + '</a>';
+        }
+      );
     }
     /* strip <script>, <style>, <iframe> and all event-handler attributes */
     html = html.replace(/<(script|style|iframe)\b[\s\S]*?<\/\1>/gi, '');
