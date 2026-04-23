@@ -641,7 +641,7 @@ var CalendarWidget = (function () {
       var hasFlyer = !!(ev.attachments && ev.attachments.some(function (a) { return a.type === 'image'; }));
       var emailInDesc = !!(evCfg.email && ev.desc && ev.desc.indexOf(evCfg.email) >= 0);
       var deadlinePassed = !!(deadline && deadline < today);
-      if (evCfg.email && hasFlyer && emailInDesc && !deadlinePassed) {
+      if (evCfg.email && hasFlyer && emailInDesc && (!deadlinePassed || dev)) {
         var mailBtn = document.createElement('a');
         mailBtn.className = 'cw-mail-btn';
         mailBtn.href = 'mailto:' + evCfg.email +
