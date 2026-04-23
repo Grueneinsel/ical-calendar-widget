@@ -525,7 +525,7 @@ var CalendarWidget = (function () {
   function shareEvent(ev, btn) {
     var parts = [ev.title, evDateStr(ev)];
     if (ev.location) parts.push('📍 ' + ev.location);
-    if (ev.desc)     parts.push(ev.desc.slice(0, 300) + (ev.desc.length > 300 ? '…' : ''));
+    if (ev.url)      parts.push('🔗 ' + ev.url);
     var text = parts.filter(Boolean).join('\n');
     if (navigator.share) {
       navigator.share({ title: ev.title, text: text }).catch(function () {});
