@@ -48,8 +48,12 @@
       }
     }
 
+    /* extract Google Calendar ID from ICS URL for event deep-links */
+    var calIdMatch = icalUrl.match(/\/ical\/([^\/]+)\//);
+    var calId = calIdMatch ? decodeURIComponent(calIdMatch[1]) : null;
+
     widget.setFlyers(flyers);
-    widget.setEvents(events, { dev: devMode, source: source });
+    widget.setEvents(events, { dev: devMode, source: source, calId: calId });
   }
 
   /* Phase 1: local backup — renders immediately if available */

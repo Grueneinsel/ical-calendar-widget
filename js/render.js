@@ -522,26 +522,24 @@ var CalendarWidget = (function () {
     if (startDay === endDay) return start;
     return start + ' – ' + endCmp.toLocaleDateString('de-DE', opts);
   }
-  function googleCalUrl(ev) {
-    var p = function (n) { return String(n).padStart(2, '0'); };
-    function fmt(d, allDay) {
-      if (allDay) return d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate());
-      return d.getUTCFullYear() + p(d.getUTCMonth() + 1) + p(d.getUTCDate()) +
-        'T' + p(d.getUTCHours()) + p(d.getUTCMinutes()) + p(d.getUTCSeconds()) + 'Z';
-    }
-    var end = ev.end || (ev.allDay ? new Date(ev.start.getTime() + 86400000) : ev.start);
-    var u = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
-      '&text='  + encodeURIComponent(ev.title || '') +
-      '&dates=' + fmt(ev.start, ev.allDay) + '/' + fmt(end, ev.allDay);
-    if (ev.location) u += '&location=' + encodeURIComponent(ev.location);
-    if (ev.desc)     u += '&details='  + encodeURIComponent(ev.desc);
-    return u;
+  function googleEventViewUrl(ev, calId) {
+    /* Build a direct Google Calendar event view link.
+       eid = base64( uid_local + ' ' + calId_local + '@g' )
+       uid_local = UID without trailing @google.com / @googlemail.com
+       calId_local = calId without trailing @group.calendar.google.com / @gmail.com */
+    if (!ev.uid || !calId) return null;
+    var uidLocal  = ev.uid.replace(/@google(?:mail)?\.com$/, '');
+    var calLocal  = calId.replace(/@(?:group\.calendar|gmail)\.google\.com$/, '');
+    try {
+      var eid = btoa(uidLocal + ' ' + calLocal + '@g');
+      return 'https://calendar.google.com/calendar/event?eid=' + eid;
+    } catch (e) { return null; }
   }
   function shareEvent(ev, btn) {
-    var gcal = googleCalUrl(ev);
+    var link = googleEventViewUrl(ev, calId);
     var parts = [ev.title, evDateStr(ev)];
     if (ev.location) parts.push('📍 ' + ev.location);
-    parts.push('📅 Zum Google Kalender hinzufügen: ' + gcal);
+    if (link) parts.push('🗓 ' + link);
     var text = parts.filter(Boolean).join('\n');
     if (navigator.share) {
       navigator.share({ title: ev.title, text: text }).catch(function () {});
@@ -559,6 +557,7 @@ var CalendarWidget = (function () {
     this.$list.innerHTML = '';
     var self = this;
     var dev   = opts && opts.dev;
+    var calId = opts && opts.calId || null;
     var today = new Date(); today.setHours(0, 0, 0, 0);
 
     var items = events
