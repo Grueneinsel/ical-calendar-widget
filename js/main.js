@@ -5,7 +5,6 @@
   var cfg     = (typeof CW_CONFIG !== 'undefined') ? CW_CONFIG : {};
   var params  = new URLSearchParams(location.search);
   var icalUrl = params.get('url') || (params.has('btc') ? cfg.calendarUrl : '') || '';
-  cfg.email   = params.get('email') || cfg.email || '';
   var devMode = params.has('dev');
   var widget  = new CalendarWidget(document.getElementById('cw-root'));
 
@@ -39,12 +38,11 @@
       for (var j = 0; j < atts.length && flyers.length < 21; j++) {
         if (atts[j].type === 'image') {
           var ev = flyerEvents[i];
-          var emailInDesc = !!(cfg.email && ev.desc && ev.desc.indexOf(cfg.email) >= 0);
           flyers.push(Object.assign({
             eventTitle: ev.title,
             eventDesc:  ev.desc  || null,
             eventStart: ev.start || null,
-            anmeldenEmail: emailInDesc ? cfg.email : null
+            anmeldenEmail: extractEmail(ev.desc)
           }, atts[j]));
         }
       }

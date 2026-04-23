@@ -115,6 +115,13 @@ var CalendarWidget = (function () {
     return wrap;
   }
 
+  /* ── email extractor ── */
+  var _EMAIL_RE = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/;
+  function extractEmail(text) {
+    var m = text && _EMAIL_RE.exec(text);
+    return m ? m[0] : null;
+  }
+
   /* ── deadline date extractor ──
      Scans a description (plain text or HTML) for a registration deadline.
      Pass 1: lines containing explicit keywords.
@@ -223,8 +230,7 @@ var CalendarWidget = (function () {
       '<div class="cw-hint-title">&#128197; Kalender-Widget</div>' +
       '<p>Kein Kalender angegeben. Füge einen der folgenden Parameter an die URL an:</p>' +
       '<div class="cw-hint-row"><span class="cw-hint-param">?url=</span><span class="cw-hint-desc">iCal-Feed URL (Google Calendar, Outlook …)</span></div>' +
-      '<div class="cw-hint-row"><span class="cw-hint-param">&amp;email=</span><span class="cw-hint-desc">Kontakt-E-Mail für Anmelde-Buttons</span></div>' +
-      '<div class="cw-hint-example">widget.html?url=<em>DEINE-ICS-URL</em>&amp;email=<em>info@beispiel.de</em></div>';
+      '<div class="cw-hint-example">widget.html?url=<em>DEINE-ICS-URL</em></div>';
     this.$list.appendChild(box);
   };
 
@@ -605,14 +611,12 @@ var CalendarWidget = (function () {
         }
 
         if (hasAtts) {
-          var evCfgI = (typeof CW_CONFIG !== 'undefined') ? CW_CONFIG : {};
-          var emailInDescI = !!(evCfgI.email && ev.desc && ev.desc.indexOf(evCfgI.email) >= 0);
           var imgFlyers = ev.attachments
             .filter(function (a) { return a.type === 'image'; })
             .map(function (a) {
               return Object.assign({ eventTitle: ev.title, eventDesc: ev.desc || null,
                 eventStart: ev.start || null,
-                anmeldenEmail: emailInDescI ? evCfgI.email : null }, a);
+                anmeldenEmail: extractEmail(ev.desc) }, a);
             });
           ev.attachments.forEach(function (att) {
             var imgIdx = imgFlyers.findIndex ? imgFlyers.findIndex(function (f) { return f === att || f.url === att.url; }) : -1;
@@ -637,14 +641,13 @@ var CalendarWidget = (function () {
       }
 
       /* mailto anmelden button — only when flyer image + email in desc + deadline not passed */
-      var evCfg = (typeof CW_CONFIG !== 'undefined') ? CW_CONFIG : {};
       var hasFlyer = !!(ev.attachments && ev.attachments.some(function (a) { return a.type === 'image'; }));
-      var emailInDesc = !!(evCfg.email && ev.desc && ev.desc.indexOf(evCfg.email) >= 0);
+      var descEmail = extractEmail(ev.desc);
       var deadlinePassed = !!(deadline && deadline < today);
-      if (evCfg.email && hasFlyer && emailInDesc && (!deadlinePassed || dev)) {
+      if (hasFlyer && descEmail && (!deadlinePassed || dev)) {
         var mailBtn = document.createElement('a');
         mailBtn.className = 'cw-mail-btn';
-        mailBtn.href = 'mailto:' + evCfg.email +
+        mailBtn.href = 'mailto:' + descEmail +
           '?subject=' + encodeURIComponent(ev.title || '');
         mailBtn.textContent = '✉ Anmelden';
         mailBtn.target = '_blank';
