@@ -476,9 +476,17 @@ var CalendarWidget = (function () {
     return d.getUTCFullYear() + p(d.getUTCMonth() + 1) + p(d.getUTCDate()) +
       'T' + p(d.getUTCHours()) + p(d.getUTCMinutes()) + p(d.getUTCSeconds()) + 'Z';
   }
+  /* RFC 5545: fold lines longer than 75 octets */
+  function icsFold(line) {
+    var out = '';
+    while (line.length > 75) { out += line.slice(0, 75) + '\r\n '; line = line.slice(75); }
+    return out + line;
+  }
   function downloadEventIcs(ev) {
     var now = new Date();
-    var lines = [
+    /* for all-day events without explicit end, use next day (iCal DTEND is exclusive) */
+    var dtEnd = ev.end || (ev.allDay ? new Date(ev.start.getTime() + 86400000) : null);
+    var raw = [
       'BEGIN:VCALENDAR', 'VERSION:2.0', 'CALSCALE:GREGORIAN',
       'PRODID:-//Calendar Widget//DE',
       'BEGIN:VEVENT',
@@ -487,12 +495,13 @@ var CalendarWidget = (function () {
       'SUMMARY:' + icsEsc(ev.title),
       'DTSTART' + (ev.allDay ? ';VALUE=DATE:' : ':') + toIcsDt(ev.start, ev.allDay)
     ];
-    if (ev.end)      lines.push('DTEND' + (ev.allDay ? ';VALUE=DATE:' : ':') + toIcsDt(ev.end, ev.allDay));
-    if (ev.desc)     lines.push('DESCRIPTION:' + icsEsc(ev.desc));
-    if (ev.location) lines.push('LOCATION:' + icsEsc(ev.location));
-    if (ev.url)      lines.push('URL:' + ev.url);
-    lines.push('END:VEVENT', 'END:VCALENDAR');
-    var blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    if (dtEnd)       raw.push('DTEND' + (ev.allDay ? ';VALUE=DATE:' : ':') + toIcsDt(dtEnd, ev.allDay));
+    if (ev.desc)     raw.push('DESCRIPTION:' + icsEsc(ev.desc));
+    if (ev.location) raw.push('LOCATION:' + icsEsc(ev.location));
+    if (ev.url)      raw.push('URL:' + ev.url);
+    raw.push('END:VEVENT', 'END:VCALENDAR');
+    var content = raw.map(icsFold).join('\r\n');
+    var blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = (ev.title || 'Termin').replace(/[^\w\s\-äöüÄÖÜß]/g, '').trim() + '.ics';
@@ -501,17 +510,29 @@ var CalendarWidget = (function () {
   }
 
   /* ── share / copy ── */
+  function evDateStr(ev) {
+    var opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+    if (!ev.start) return '';
+    var start = ev.start.toLocaleDateString('de-DE', opts);
+    if (!ev.end) return start;
+    /* check if end is a different day (for all-day, DTEND is exclusive so subtract 1ms) */
+    var endCmp = ev.allDay ? new Date(ev.end.getTime() - 1) : ev.end;
+    var startDay = ev.start.toDateString();
+    var endDay   = endCmp.toDateString();
+    if (startDay === endDay) return start;
+    return start + ' – ' + endCmp.toLocaleDateString('de-DE', opts);
+  }
   function shareEvent(ev, btn) {
-    var dateStr = ev.start ? ev.start.toLocaleDateString('de-DE', {
-      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-    }) : '';
-    var text = [ev.title, dateStr, ev.location ? '📍 ' + ev.location : ''].filter(Boolean).join('\n');
+    var parts = [ev.title, evDateStr(ev)];
+    if (ev.location) parts.push('📍 ' + ev.location);
+    if (ev.desc)     parts.push(ev.desc.slice(0, 300) + (ev.desc.length > 300 ? '…' : ''));
+    var text = parts.filter(Boolean).join('\n');
     if (navigator.share) {
       navigator.share({ title: ev.title, text: text }).catch(function () {});
     } else if (navigator.clipboard) {
       navigator.clipboard.writeText(text).then(function () {
         var orig = btn.textContent;
-        btn.textContent = '✓';
+        btn.textContent = '✓ Kopiert';
         setTimeout(function () { btn.textContent = orig; }, 1500);
       }).catch(function () {});
     }
