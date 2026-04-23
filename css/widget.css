@@ -189,24 +189,27 @@
 .cw-icon-btn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 3px;
   background: none;
   border: 1.5px solid var(--border);
-  border-radius: 50%;
-  width: 26px;
-  height: 26px;
-  font-size: 13px;
+  border-radius: 12px;
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font);
+  color: var(--muted);
   cursor: pointer;
-  padding: 0;
   line-height: 1;
-  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+  transition: border-color 0.15s, background 0.15s, color 0.15s, transform 0.15s, box-shadow 0.15s;
 }
 .cw-icon-btn:hover {
   border-color: var(--accent);
   background: var(--accent-light);
-  transform: translateY(-1px) scale(1.1);
+  color: var(--accent-dark);
+  transform: translateY(-1px) scale(1.04);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.10);
 }
-.cw-icon-btn:active { transform: scale(0.93); }
+.cw-icon-btn:active { transform: scale(0.97); box-shadow: none; }
 
 /* anmelden mailto button */
 .cw-mail-btn {

@@ -735,14 +735,14 @@ var CalendarWidget = (function () {
       var calBtn = document.createElement('button');
       calBtn.className = 'cw-icon-btn';
       calBtn.title = 'Zum Kalender hinzufügen';
-      calBtn.textContent = '📅';
+      calBtn.textContent = '📅 Speichern';
       calBtn.addEventListener('click', function (e) { e.stopPropagation(); downloadEventIcs(ev); });
       actionsBar.appendChild(calBtn);
 
       var shareBtn = document.createElement('button');
       shareBtn.className = 'cw-icon-btn';
       shareBtn.title = 'Teilen / Kopieren';
-      shareBtn.textContent = '🔗';
+      shareBtn.textContent = '🔗 Teilen';
       (function (btn) {
         btn.addEventListener('click', function (e) { e.stopPropagation(); shareEvent(ev, btn); });
       })(shareBtn);
