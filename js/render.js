@@ -1,6 +1,12 @@
 /* render.js — event list rendering */
 'use strict';
 
+var _EMAIL_RE = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/;
+function extractEmail(text) {
+  var m = text && _EMAIL_RE.exec(text);
+  return m ? m[0] : null;
+}
+
 var CalendarWidget = (function () {
 
   var MONTHS = ['Januar','Februar','März','April','Mai','Juni','Juli',
@@ -113,13 +119,6 @@ var CalendarWidget = (function () {
     }
 
     return wrap;
-  }
-
-  /* ── email extractor ── */
-  var _EMAIL_RE = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/;
-  function extractEmail(text) {
-    var m = text && _EMAIL_RE.exec(text);
-    return m ? m[0] : null;
   }
 
   /* ── deadline date extractor ──
