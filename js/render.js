@@ -535,7 +535,7 @@ var CalendarWidget = (function () {
       return 'https://calendar.google.com/calendar/event?eid=' + eid;
     } catch (e) { return null; }
   }
-  function shareEvent(ev, btn) {
+  function shareEvent(ev, btn, calId) {
     var link = googleEventViewUrl(ev, calId);
     var parts = [ev.title, evDateStr(ev)];
     if (ev.location) parts.push('📍 ' + ev.location);
@@ -783,7 +783,7 @@ var CalendarWidget = (function () {
       shareBtn.title = 'Teilen / Kopieren';
       shareBtn.textContent = '🔗 Teilen';
       (function (btn) {
-        btn.addEventListener('click', function (e) { e.stopPropagation(); shareEvent(ev, btn); });
+        btn.addEventListener('click', function (e) { e.stopPropagation(); shareEvent(ev, btn, calId); });
       })(shareBtn);
       actionsBar.appendChild(shareBtn);
 
