@@ -25,23 +25,40 @@ var CalendarWidget = (function () {
 
   /* Render description as HTML, stripping only dangerous elements/attributes */
   function sanitizeDesc(html) {
-    /* plain text (no tags) → convert newlines and auto-link URLs + emails */
-    if (html.indexOf('<') === -1) {
-      return html.replace(/\n/g, '<br>').replace(
-        /(https?:\/\/[^\s<>"]+)|([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})|(\+49[\s\-.]?[\d][\d\s\-.]{5,}|\(?\b0\d{2,4}\)?[\s\-./]?\d{3}[\d\s\-.]*)/g,
-        function (m, url, email, phone) {
-          if (url)   return '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + url + '</a>';
-          if (email) return '<a href="mailto:' + email + '">' + email + '</a>';
-          var tel = phone.replace(/[^\d+]/g, '');
-          return '<a href="tel:' + tel + '">' + phone + '</a>';
-        }
-      );
-    }
+    /* plain text (no tags) → convert newlines to <br> */
+    if (html.indexOf('<') === -1) return html.replace(/\n/g, '<br>');
     /* strip <script>, <style>, <iframe> and all event-handler attributes */
     html = html.replace(/<(script|style|iframe)\b[\s\S]*?<\/\1>/gi, '');
     html = html.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, '');
     html = html.replace(/href\s*=\s*["']?javascript:[^"'\s>]*/gi, 'href="#"');
     return html;
+  }
+
+  var _AUTOLINK_RE = /(https?:\/\/[^\s<>"]+)|([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})|(\+49[\s\-.]?\d[\d\s\-.]{5,}|\(?\b0\d{2,5}\)?[\s\-./]?\d{3}[\d\s\-.]{2,})/g;
+
+  /* Walk text nodes in el (skipping those already inside <a>) and auto-link
+     URLs, email addresses and phone numbers by replacing with anchor tags. */
+  function autoLinkEl(el) {
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+    var nodes = [];
+    var n;
+    while ((n = walker.nextNode())) nodes.push(n);
+    nodes.forEach(function (node) {
+      var p = node.parentNode;
+      while (p && p !== el) { if (p.tagName === 'A') return; p = p.parentNode; }
+      var text = node.nodeValue;
+      _AUTOLINK_RE.lastIndex = 0;
+      var linked = text.replace(_AUTOLINK_RE, function (m, url, email, phone) {
+        if (url)   return '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + url + '</a>';
+        if (email) return '<a href="mailto:' + email + '">' + email + '</a>';
+        return '<a href="tel:' + phone.replace(/[^\d+]/g, '') + '">' + phone + '</a>';
+      });
+      if (linked !== text) {
+        var span = document.createElement('span');
+        span.innerHTML = linked;
+        node.parentNode.replaceChild(span, node);
+      }
+    });
   }
 
   /* build ordered fallback src list for a flyer/attachment object.
@@ -606,6 +623,7 @@ var CalendarWidget = (function () {
           var descEl = document.createElement('div');
           descEl.className = 'cw-desc';
           descEl.innerHTML = sanitizeDesc(ev.desc);
+          autoLinkEl(descEl);
           var links = descEl.querySelectorAll('a');
           for (var li = 0; li < links.length; li++) {
             var href = links[li].getAttribute('href') || '';
