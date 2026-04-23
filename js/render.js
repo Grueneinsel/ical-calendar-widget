@@ -466,6 +466,54 @@ var CalendarWidget = (function () {
     }
   };
 
+  /* ── ICS download ── */
+  function icsEsc(s) {
+    return String(s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+  }
+  function toIcsDt(d, allDay) {
+    var p = function (n) { return String(n).padStart(2, '0'); };
+    if (allDay) return d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate());
+    return d.getUTCFullYear() + p(d.getUTCMonth() + 1) + p(d.getUTCDate()) +
+      'T' + p(d.getUTCHours()) + p(d.getUTCMinutes()) + p(d.getUTCSeconds()) + 'Z';
+  }
+  function downloadEventIcs(ev) {
+    var lines = [
+      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Calendar Widget//DE',
+      'BEGIN:VEVENT',
+      'UID:' + (ev.uid || ('cw-' + Date.now())) + '@cw',
+      'SUMMARY:' + icsEsc(ev.title),
+      'DTSTART' + (ev.allDay ? ';VALUE=DATE:' : ':') + toIcsDt(ev.start, ev.allDay)
+    ];
+    if (ev.end)      lines.push('DTEND' + (ev.allDay ? ';VALUE=DATE:' : ':') + toIcsDt(ev.end, ev.allDay));
+    if (ev.desc)     lines.push('DESCRIPTION:' + icsEsc(ev.desc));
+    if (ev.location) lines.push('LOCATION:' + icsEsc(ev.location));
+    if (ev.url)      lines.push('URL:' + ev.url);
+    lines.push('END:VEVENT', 'END:VCALENDAR');
+    var blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = (ev.title || 'Termin').replace(/[^\w\s\-äöüÄÖÜß]/g, '').trim() + '.ics';
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); document.body.removeChild(a); }, 1000);
+  }
+
+  /* ── share / copy ── */
+  function shareEvent(ev, btn) {
+    var dateStr = ev.start ? ev.start.toLocaleDateString('de-DE', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    }) : '';
+    var text = [ev.title, dateStr, ev.location ? '📍 ' + ev.location : ''].filter(Boolean).join('\n');
+    if (navigator.share) {
+      navigator.share({ title: ev.title, text: text }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function () {
+        var orig = btn.textContent;
+        btn.textContent = '✓';
+        setTimeout(function () { btn.textContent = orig; }, 1500);
+      }).catch(function () {});
+    }
+  }
+
   /* ── main render ── */
   Widget.prototype.setEvents = function (events, opts) {
     this.$list.innerHTML = '';
@@ -682,6 +730,23 @@ var CalendarWidget = (function () {
         mailBtn.addEventListener('click', function (e) { e.stopPropagation(); });
         actionsBar.appendChild(mailBtn);
       }
+
+      /* calendar download + share — always shown */
+      var calBtn = document.createElement('button');
+      calBtn.className = 'cw-icon-btn';
+      calBtn.title = 'Zum Kalender hinzufügen';
+      calBtn.textContent = '📅';
+      calBtn.addEventListener('click', function (e) { e.stopPropagation(); downloadEventIcs(ev); });
+      actionsBar.appendChild(calBtn);
+
+      var shareBtn = document.createElement('button');
+      shareBtn.className = 'cw-icon-btn';
+      shareBtn.title = 'Teilen / Kopieren';
+      shareBtn.textContent = '🔗';
+      (function (btn) {
+        btn.addEventListener('click', function (e) { e.stopPropagation(); shareEvent(ev, btn); });
+      })(shareBtn);
+      actionsBar.appendChild(shareBtn);
 
       if (actionsBar.children.length) body.appendChild(actionsBar);
 

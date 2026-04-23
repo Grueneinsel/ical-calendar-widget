@@ -185,6 +185,29 @@
   margin-top: 5px;
 }
 
+/* small icon buttons (calendar download, share) */
+.cw-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+}
+.cw-icon-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-light);
+  transform: translateY(-1px) scale(1.1);
+}
+.cw-icon-btn:active { transform: scale(0.93); }
+
 /* anmelden mailto button */
 .cw-mail-btn {
   display: inline-block;
@@ -669,3 +692,45 @@
   flex-shrink: 0;
 }
 .cw-lb-close:hover { transform: scale(1.1); }
+
+/* ── print styles ── */
+@media print {
+  .cw-flyers,
+  .cw-actions,
+  .cw-lb-overlay,
+  #cw-status,
+  .cw-disclaimer,
+  .cw-loc-btn .cw-loc-icon { display: none !important; }
+
+  .cw-info-panel { display: block !important; }
+
+  body, #cw-root { background: #fff !important; }
+
+  .cw-month {
+    background: none !important;
+    color: #000 !important;
+    border-bottom: 2px solid #000;
+    padding: 4px 0;
+    font-size: 13px;
+  }
+
+  .cw-row {
+    page-break-inside: avoid;
+    border-bottom: 1px solid #ddd;
+    box-shadow: none !important;
+  }
+
+  .cw-stripe { display: none !important; }
+
+  .cw-title { font-size: 13px !important; }
+
+  .cw-desc, .cw-att-link, .cw-att-pdf-card {
+    font-size: 11px !important;
+  }
+
+  * {
+    box-shadow: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}
