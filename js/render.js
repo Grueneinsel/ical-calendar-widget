@@ -70,6 +70,8 @@ var CalendarWidget = (function () {
     wrap.className = 'cw-att';
 
     if (att.type === 'image') {
+      var imgWrap = document.createElement('div');
+      imgWrap.className = 'cw-att-img-wrap';
       var img = document.createElement('img');
       img.alt       = 'Anhang';
       img.className = 'cw-att-img';
@@ -84,9 +86,10 @@ var CalendarWidget = (function () {
         var fb = document.createElement('a');
         fb.href = att.url || ''; fb.target = '_blank'; fb.rel = 'noopener';
         fb.className = 'cw-att-link'; fb.textContent = '🖼️ Bild öffnen';
-        wrap.replaceChild(fb, img);
+        wrap.replaceChild(fb, imgWrap);
       });
-      wrap.appendChild(img);
+      imgWrap.appendChild(img);
+      wrap.appendChild(imgWrap);
 
     } else if (att.type === 'pdf') {
       /* Drive PDF previews require cookies → styled link card.
