@@ -39,12 +39,28 @@ var CalendarWidget = (function () {
   }
 
   /* Phone: +49 or 0-prefix, 7–15 digits total, not followed by another digit */
-  /* Group 1: IBAN — matched first so its digit sequences don't trigger phone detection */
   var _AUTOLINK_RE = /(\b[A-Z]{2}\d{2}(?:\s*[A-Z\d]{4}){3,}(?:\s*[A-Z\d]{1,4})?\b)|(https?:\/\/[^\s<>"]+)|([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})|(\+49[\s\-.]?\d[\d\s\-.]{6,12}|\(?\b0\d{2,5}\)?[\s\-./]?\d{3}[\d\s\-.]{1,9})(?!\d)/g;
+  var _IBAN_RE  = /\b[A-Z]{2}\d{2}(?:\s*[A-Z\d]{4}){3,}(?:\s*[A-Z\d]{1,4})?\b/g;
 
   /* Walk text nodes in el (skipping those already inside <a>) and auto-link
-     URLs, email addresses and phone numbers by replacing with anchor tags. */
+     URLs, email addresses and phone numbers by replacing with anchor tags.
+     Pre-scans the full element text for IBANs so split text nodes (caused by
+     bold/italic formatting) are still excluded from phone detection. */
   function autoLinkEl(el) {
+    /* Build a set of digit-only strings for every IBAN found in the element */
+    var ibanDigits = {};
+    var fullText = el.textContent || '';
+    _IBAN_RE.lastIndex = 0;
+    var im;
+    while ((im = _IBAN_RE.exec(fullText)) !== null) {
+      ibanDigits[im[0].replace(/\s/g, '')] = true;
+    }
+
+    function phoneIsInIban(digits) {
+      var d = digits.replace(/\D/g, '');
+      return Object.keys(ibanDigits).some(function (iban) { return iban.indexOf(d) >= 0; });
+    }
+
     var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
     var nodes = [];
     var n;
@@ -56,9 +72,9 @@ var CalendarWidget = (function () {
       _AUTOLINK_RE.lastIndex = 0;
       var linked = text.replace(_AUTOLINK_RE, function (m, iban, url, email, phone) {
         if (iban)  return esc(m);
-        /* escape text content; sanitize href to prevent quote-breaking */
         if (url)   return '<a href="' + url.replace(/"/g, '%22') + '" target="_blank" rel="noopener noreferrer">' + esc(url) + '</a>';
         if (email) return '<a href="mailto:' + email.replace(/"/g, '%22') + '">' + esc(email) + '</a>';
+        if (phoneIsInIban(phone)) return esc(phone);
         return '<a href="tel:' + phone.replace(/[^\d+]/g, '') + '">' + esc(phone) + '</a>';
       });
       if (linked !== text) {
