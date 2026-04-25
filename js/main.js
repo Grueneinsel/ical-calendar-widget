@@ -13,13 +13,15 @@
     return;
   }
 
-  /* Auto-resize: notify parent whenever content height changes */
+  /* Auto-resize: notify parent whenever content height changes.
+     Use #cw-root offsetHeight (not scrollHeight) so shrinking also triggers. */
   if (window.ResizeObserver) {
+    var rootEl = document.getElementById('cw-root');
     new ResizeObserver(function () {
       window.parent.postMessage(
-        { type: 'cw-resize', height: document.documentElement.scrollHeight }, '*'
+        { type: 'cw-resize', height: rootEl.offsetHeight }, '*'
       );
-    }).observe(document.documentElement);
+    }).observe(rootEl);
   }
 
   function render(text, source) {
