@@ -554,6 +554,12 @@ var CalendarWidget = (function () {
 
   /* ── main render ── */
   Widget.prototype.setEvents = function (events, opts) {
+    /* remember which info panels are open before wiping the DOM */
+    var openKeys = {};
+    this.$list.querySelectorAll('[data-evkey]').forEach(function (row) {
+      if (row.querySelector('.cw-info-panel-open')) openKeys[row.dataset.evkey] = true;
+    });
+
     this.$list.innerHTML = '';
     var self = this;
     var dev   = opts && opts.dev;
@@ -597,6 +603,8 @@ var CalendarWidget = (function () {
       /* event row */
       var row = document.createElement('div');
       row.className = 'cw-item' + (ev.status === 'CANCELLED' ? ' cw-cancel' : '');
+      var evKey = (ev.uid || '') + '|' + ev.start.getTime();
+      row.dataset.evkey = evKey;
 
       /* date badge */
       var multiDay = isMultiDay(ev);
@@ -750,6 +758,12 @@ var CalendarWidget = (function () {
           var open = infoPanel.classList.toggle('cw-info-panel-open');
           infoToggle.textContent = open ? 'Info ▴' : 'Info ▾';
         });
+
+        /* restore open state after live reload */
+        if (openKeys[evKey]) {
+          infoPanel.classList.add('cw-info-panel-open');
+          infoToggle.textContent = 'Info ▴';
+        }
 
         actionsBar.appendChild(infoToggle);
         body.appendChild(infoPanel);
