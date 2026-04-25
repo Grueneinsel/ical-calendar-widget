@@ -2,6 +2,9 @@
 'use strict';
 
 (function () {
+  /* Prevent iframe scrollbar caused by sub-pixel rounding */
+  if (window.self !== window.top) document.body.style.overflow = 'hidden';
+
   var cfg     = (typeof CW_CONFIG !== 'undefined') ? CW_CONFIG : {};
   var params  = new URLSearchParams(location.search);
   var icalUrl = params.get('url') || (params.has('btc') ? cfg.calendarUrl : '') || '';
