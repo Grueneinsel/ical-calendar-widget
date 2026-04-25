@@ -23,18 +23,23 @@ var CalendarWidget = (function () {
     return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(location);
   }
 
-  /* Render description as HTML, stripping only dangerous elements/attributes */
+  /* Render description as HTML, stripping dangerous elements/attributes */
   function sanitizeDesc(html) {
     /* plain text (no tags) → convert newlines to <br> */
     if (html.indexOf('<') === -1) return html.replace(/\n/g, '<br>');
-    /* strip <script>, <style>, <iframe> and all event-handler attributes */
-    html = html.replace(/<(script|style|iframe)\b[\s\S]*?<\/\1>/gi, '');
+    /* strip paired dangerous tags */
+    html = html.replace(/<(script|style|iframe|object|form)\b[\s\S]*?<\/\1>/gi, '');
+    /* strip void dangerous tags */
+    html = html.replace(/<(embed|base|link)\b[^>]*>/gi, '');
+    /* strip event-handler attributes */
     html = html.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, '');
-    html = html.replace(/href\s*=\s*["']?javascript:[^"'\s>]*/gi, 'href="#"');
+    /* strip javascript: and vbscript: hrefs */
+    html = html.replace(/href\s*=\s*["']?\s*(?:javascript|vbscript)\s*:[^"'\s>]*/gi, 'href="#"');
     return html;
   }
 
-  var _AUTOLINK_RE = /(https?:\/\/[^\s<>"]+)|([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})|(\+49[\s\-.]?\d[\d\s\-.]{5,}|\(?\b0\d{2,5}\)?[\s\-./]?\d{3}[\d\s\-.]{2,})/g;
+  /* Phone: +49 or 0-prefix, 7–15 digits total, not followed by another digit */
+  var _AUTOLINK_RE = /(https?:\/\/[^\s<>"]+)|([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})|(\+49[\s\-.]?\d[\d\s\-.]{6,12}|\(?\b0\d{2,5}\)?[\s\-./]?\d{3}[\d\s\-.]{1,9})(?!\d)/g;
 
   /* Walk text nodes in el (skipping those already inside <a>) and auto-link
      URLs, email addresses and phone numbers by replacing with anchor tags. */
@@ -49,9 +54,10 @@ var CalendarWidget = (function () {
       var text = node.nodeValue;
       _AUTOLINK_RE.lastIndex = 0;
       var linked = text.replace(_AUTOLINK_RE, function (m, url, email, phone) {
-        if (url)   return '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + url + '</a>';
-        if (email) return '<a href="mailto:' + email + '">' + email + '</a>';
-        return '<a href="tel:' + phone.replace(/[^\d+]/g, '') + '">' + phone + '</a>';
+        /* escape text content; sanitize href to prevent quote-breaking */
+        if (url)   return '<a href="' + url.replace(/"/g, '%22') + '" target="_blank" rel="noopener noreferrer">' + esc(url) + '</a>';
+        if (email) return '<a href="mailto:' + email.replace(/"/g, '%22') + '">' + esc(email) + '</a>';
+        return '<a href="tel:' + phone.replace(/[^\d+]/g, '') + '">' + esc(phone) + '</a>';
       });
       if (linked !== text) {
         var span = document.createElement('span');
@@ -330,7 +336,9 @@ var CalendarWidget = (function () {
     var overlay = document.createElement('div');
     overlay.className = 'cw-lb-overlay';
 
+    var onKey; /* hoisted so closeOverlay can remove it from any code path */
     function closeOverlay() {
+      document.removeEventListener('keydown', onKey);
       if (document.fullscreenElement) {
         document.exitFullscreen().catch(function () {});
       }
@@ -402,7 +410,8 @@ var CalendarWidget = (function () {
 
     /* ── zoom logic (slider + pinch) ── */
     function applyZoom(pct) {
-      if (!pzNaturalW) pzNaturalW = img.offsetWidth;
+      if (!pzNaturalW) pzNaturalW = img.naturalWidth || img.offsetWidth;
+      if (!pzNaturalW) return; /* image not loaded yet — skip */
       pct = Math.max(25, Math.min(400, pct));
       zoomSlider.value = pct;
       if (pct === 100) {
@@ -447,12 +456,8 @@ var CalendarWidget = (function () {
     });
 
     /* Escape: browser exits fullscreen first, then fires keydown */
-    document.addEventListener('keydown', function onKey(e) {
-      if (e.key === 'Escape') {
-        document.removeEventListener('keydown', onKey);
-        overlay.remove();
-      }
-    });
+    onKey = function (e) { if (e.key === 'Escape') closeOverlay(); };
+    document.addEventListener('keydown', onKey);
 
     document.body.appendChild(overlay);
 
@@ -522,18 +527,24 @@ var CalendarWidget = (function () {
     if (startDay === endDay) return start;
     return start + ' – ' + endCmp.toLocaleDateString('de-DE', opts);
   }
+  /* btoa() only handles Latin-1; use encodeURIComponent trick for Unicode */
+  function safeB64(str) {
+    try { return btoa(unescape(encodeURIComponent(str))); } catch (e) { return null; }
+  }
   function googleEventViewUrl(ev, calId) {
-    /* Build a direct Google Calendar event view link.
-       eid = base64( uid_local + ' ' + calId_local + '@g' )
-       uid_local = UID without trailing @google.com / @googlemail.com
-       calId_local = calId without trailing @group.calendar.google.com / @gmail.com */
     if (!ev.uid || !calId) return null;
-    var uidLocal  = ev.uid.replace(/@google(?:mail)?\.com$/, '');
-    var calLocal  = calId.replace(/@(?:group\.calendar|gmail)\.google\.com$/, '');
-    try {
-      var eid = btoa(uidLocal + ' ' + calLocal + '@g');
-      return 'https://calendar.google.com/calendar/event?eid=' + eid;
-    } catch (e) { return null; }
+    var uidLocal = ev.uid.replace(/@google(?:mail)?\.com$/, '');
+    var calLocal = calId.replace(/@(?:group\.calendar|gmail)\.google\.com$/, '');
+    var eid = safeB64(uidLocal + ' ' + calLocal + '@g');
+    return eid ? 'https://calendar.google.com/calendar/event?eid=' + eid : null;
+  }
+  function copyToClipboard(text, btn) {
+    if (!navigator.clipboard) return;
+    navigator.clipboard.writeText(text).then(function () {
+      var orig = btn.textContent;
+      btn.textContent = '✓ Kopiert';
+      setTimeout(function () { btn.textContent = orig; }, 1500);
+    }).catch(function () {});
   }
   function shareEvent(ev, btn, calId) {
     var link = googleEventViewUrl(ev, calId);
@@ -542,13 +553,10 @@ var CalendarWidget = (function () {
     if (link) parts.push('🗓 ' + link);
     var text = parts.filter(Boolean).join('\n');
     if (navigator.share) {
-      navigator.share({ title: ev.title, text: text }).catch(function () {});
-    } else if (navigator.clipboard) {
-      navigator.clipboard.writeText(text).then(function () {
-        var orig = btn.textContent;
-        btn.textContent = '✓ Kopiert';
-        setTimeout(function () { btn.textContent = orig; }, 1500);
-      }).catch(function () {});
+      navigator.share({ title: ev.title, text: text })
+        .catch(function () { copyToClipboard(text, btn); }); /* fallback if share fails */
+    } else {
+      copyToClipboard(text, btn);
     }
   }
 

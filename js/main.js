@@ -52,7 +52,11 @@
 
     /* extract Google Calendar ID from ICS URL for event deep-links */
     var calIdMatch = icalUrl.match(/\/ical\/([^\/]+)\//);
-    var calId = calIdMatch ? decodeURIComponent(calIdMatch[1]) : null;
+    var calId = null;
+    if (calIdMatch) {
+      try { calId = decodeURIComponent(calIdMatch[1]); }
+      catch (e) { calId = calIdMatch[1]; }
+    }
 
     widget.setFlyers(flyers);
     widget.setEvents(events, { dev: devMode, source: source, calId: calId });

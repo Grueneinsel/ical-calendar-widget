@@ -75,6 +75,10 @@ var IcalParser = (function () {
     var maxCount = rule.COUNT ? parseInt(rule.COUNT, 10) : 500;
     var rawUntil = rule.UNTIL;
     var until    = rawUntil ? (parseDtVal(rawUntil) || {}).date : null;
+    /* date-only UNTIL (no T component) → treat as end-of-day so all events on that date are included */
+    if (until && rawUntil.indexOf('T') < 0) {
+      until = new Date(until.getFullYear(), until.getMonth(), until.getDate(), 23, 59, 59);
+    }
     var limit    = (until && until < rangeEnd) ? until : rangeEnd;
     var dur      = ev.end ? ev.end - ev.start : 0;
     var exDates  = ev.exdates || {};
@@ -122,7 +126,10 @@ var IcalParser = (function () {
           d.setDate(d.getDate() + 7 * interval);
         }
       } else if (freq === 'MONTHLY') {
+        var expectedDay = d.getDate();
         d.setMonth(d.getMonth() + interval);
+        /* setMonth overflows (e.g. Jan 31 → Mar 2) — clamp to last day of intended month */
+        if (d.getDate() !== expectedDay) d.setDate(0);
       } else if (freq === 'YEARLY') {
         d.setFullYear(d.getFullYear() + interval);
       } else {
