@@ -336,15 +336,19 @@ var CalendarWidget = (function () {
     var overlay = document.createElement('div');
     overlay.className = 'cw-lb-overlay';
 
-    var onKey, onPop; /* hoisted so closeOverlay can remove them from any code path */
+    var onKey, onPop, onFsChange;
+    var _closing = false;
     function closeOverlay(fromPopstate) {
+      if (_closing) return;
+      _closing = true;
       document.removeEventListener('keydown', onKey);
       window.removeEventListener('popstate', onPop);
-      if (document.fullscreenElement) {
-        document.exitFullscreen().catch(function () {});
+      document.removeEventListener('fullscreenchange', onFsChange);
+      document.removeEventListener('webkitfullscreenchange', onFsChange);
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        (document.exitFullscreen || document.webkitExitFullscreen).call(document).catch(function () {});
       }
       overlay.remove();
-      /* if closed by button/key, pop the history entry we pushed on open */
       if (!fromPopstate) history.back();
     }
 
@@ -466,6 +470,13 @@ var CalendarWidget = (function () {
     history.pushState({ cwLightbox: true }, '');
     onPop = function () { closeOverlay(true); };
     window.addEventListener('popstate', onPop);
+
+    /* Android: back button exits fullscreen before firing popstate — catch that too */
+    onFsChange = function () {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) closeOverlay(true);
+    };
+    document.addEventListener('fullscreenchange', onFsChange);
+    document.addEventListener('webkitfullscreenchange', onFsChange);
 
     document.body.appendChild(overlay);
 
