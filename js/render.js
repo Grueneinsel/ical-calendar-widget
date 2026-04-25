@@ -336,13 +336,16 @@ var CalendarWidget = (function () {
     var overlay = document.createElement('div');
     overlay.className = 'cw-lb-overlay';
 
-    var onKey; /* hoisted so closeOverlay can remove it from any code path */
-    function closeOverlay() {
+    var onKey, onPop; /* hoisted so closeOverlay can remove them from any code path */
+    function closeOverlay(fromPopstate) {
       document.removeEventListener('keydown', onKey);
+      window.removeEventListener('popstate', onPop);
       if (document.fullscreenElement) {
         document.exitFullscreen().catch(function () {});
       }
       overlay.remove();
+      /* if closed by button/key, pop the history entry we pushed on open */
+      if (!fromPopstate) history.back();
     }
 
     /* ── top bar ── */
@@ -458,6 +461,11 @@ var CalendarWidget = (function () {
     /* Escape: browser exits fullscreen first, then fires keydown */
     onKey = function (e) { if (e.key === 'Escape') closeOverlay(); };
     document.addEventListener('keydown', onKey);
+
+    /* Mobile back button: push a history entry so back button closes the overlay */
+    history.pushState({ cwLightbox: true }, '');
+    onPop = function () { closeOverlay(true); };
+    window.addEventListener('popstate', onPop);
 
     document.body.appendChild(overlay);
 
