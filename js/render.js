@@ -471,9 +471,12 @@ var CalendarWidget = (function () {
     onPop = function () { closeOverlay(true); };
     window.addEventListener('popstate', onPop);
 
-    /* Android: back button exits fullscreen before firing popstate — catch that too */
+    /* Android: back button exits fullscreen before firing popstate.
+       setTimeout(0) lets the browser clear document.fullscreenElement first. */
     onFsChange = function () {
-      if (!document.fullscreenElement && !document.webkitFullscreenElement) closeOverlay(true);
+      setTimeout(function () {
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) closeOverlay(true);
+      }, 0);
     };
     document.addEventListener('fullscreenchange', onFsChange);
     document.addEventListener('webkitfullscreenchange', onFsChange);
