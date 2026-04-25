@@ -39,7 +39,8 @@ var CalendarWidget = (function () {
   }
 
   /* Phone: +49 or 0-prefix, 7–15 digits total, not followed by another digit */
-  var _AUTOLINK_RE = /(https?:\/\/[^\s<>"]+)|([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})|(\+49[\s\-.]?\d[\d\s\-.]{6,12}|\(?\b0\d{2,5}\)?[\s\-./]?\d{3}[\d\s\-.]{1,9})(?!\d)/g;
+  /* Group 1: IBAN — matched first so its digit sequences don't trigger phone detection */
+  var _AUTOLINK_RE = /(\b[A-Z]{2}\d{2}(?:\s*[A-Z\d]{4}){3,}(?:\s*[A-Z\d]{1,4})?\b)|(https?:\/\/[^\s<>"]+)|([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})|(\+49[\s\-.]?\d[\d\s\-.]{6,12}|\(?\b0\d{2,5}\)?[\s\-./]?\d{3}[\d\s\-.]{1,9})(?!\d)/g;
 
   /* Walk text nodes in el (skipping those already inside <a>) and auto-link
      URLs, email addresses and phone numbers by replacing with anchor tags. */
@@ -53,7 +54,8 @@ var CalendarWidget = (function () {
       while (p && p !== el) { if (p.tagName === 'A') return; p = p.parentNode; }
       var text = node.nodeValue;
       _AUTOLINK_RE.lastIndex = 0;
-      var linked = text.replace(_AUTOLINK_RE, function (m, url, email, phone) {
+      var linked = text.replace(_AUTOLINK_RE, function (m, iban, url, email, phone) {
+        if (iban)  return esc(m);
         /* escape text content; sanitize href to prevent quote-breaking */
         if (url)   return '<a href="' + url.replace(/"/g, '%22') + '" target="_blank" rel="noopener noreferrer">' + esc(url) + '</a>';
         if (email) return '<a href="mailto:' + email.replace(/"/g, '%22') + '">' + esc(email) + '</a>';
