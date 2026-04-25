@@ -290,10 +290,7 @@ var IcalParser = (function () {
 
   var PROXIES = [
     function (u) { return u; },
-    function (u) { return 'https://corsproxy.io/?' + encodeURIComponent(u); },
-    function (u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); },
-    function (u) { return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u); },
-    function (u) { return 'https://thingproxy.freeboard.io/fetch/' + u; }
+    function (u) { return 'https://ical-proxy.grueneinsel1.workers.dev?url=' + encodeURIComponent(u); }
   ];
 
   /* Try each proxy in sequence until one returns valid iCal data. */
