@@ -352,6 +352,17 @@ var IcalParser = (function () {
       });
   }
 
+  /* Fingerprint: sorted "UID|LAST-MODIFIED" pairs — immune to event re-ordering and DTSTAMP changes. */
+  function icsFingerprint(ics) {
+    var pairs = [], uid = '', lm = '';
+    unfold(ics).split(/\r?\n/).forEach(function (line) {
+      if (line.indexOf('UID:') === 0)           uid = line.slice(4).trim();
+      if (line.indexOf('LAST-MODIFIED:') === 0) lm  = line.slice(14).trim();
+      if (line === 'END:VEVENT') { pairs.push(uid + '|' + lm); uid = ''; lm = ''; }
+    });
+    return pairs.sort().join('\n');
+  }
+
   /* public API */
-  return { parse: parse, fetch: fetchCalendar, fetchLocal: fetchLocal, fetchLive: fetchLive, dateKey: dateKey };
+  return { parse: parse, fetch: fetchCalendar, fetchLocal: fetchLocal, fetchLive: fetchLive, dateKey: dateKey, fingerprint: icsFingerprint };
 })();

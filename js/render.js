@@ -40,25 +40,21 @@ var CalendarWidget = (function () {
 
   /* Phone: +49 or 0-prefix, 7–15 digits total, not followed by another digit */
   var _AUTOLINK_RE = /(\b[A-Z]{2}\d{2}(?:\s*[A-Z\d]{4}){3,}(?:\s*[A-Z\d]{1,4})?\b)|(https?:\/\/[^\s<>"]+)|([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})|(\+49[\s\-.]?\d[\d\s\-.]{6,12}|\(?\b0\d{2,5}\)?[\s\-./]?\d{3}[\d\s\-.]{1,9})(?!\d)/g;
-  var _IBAN_RE  = /\b[A-Z]{2}\d{2}(?:\s*[A-Z\d]{4}){3,}(?:\s*[A-Z\d]{1,4})?\b/g;
 
   /* Walk text nodes in el (skipping those already inside <a>) and auto-link
      URLs, email addresses and phone numbers by replacing with anchor tags.
      Pre-scans the full element text for IBANs so split text nodes (caused by
      bold/italic formatting) are still excluded from phone detection. */
   function autoLinkEl(el) {
-    /* Build a set of digit-only strings for every IBAN found in the element */
-    var ibanDigits = {};
+    /* Local regex instance avoids shared lastIndex state if autoLinkEl is re-entered */
+    var ibanRe = /\b[A-Z]{2}\d{2}(?:\s*[A-Z\d]{4}){3,}(?:\s*[A-Z\d]{1,4})?\b/g;
     var fullText = el.textContent || '';
-    _IBAN_RE.lastIndex = 0;
+    var ibanDigitStr = '';
     var im;
-    while ((im = _IBAN_RE.exec(fullText)) !== null) {
-      ibanDigits[im[0].replace(/\s/g, '')] = true;
-    }
+    while ((im = ibanRe.exec(fullText)) !== null) ibanDigitStr += im[0].replace(/\s/g, '');
 
-    function phoneIsInIban(digits) {
-      var d = digits.replace(/\D/g, '');
-      return Object.keys(ibanDigits).some(function (iban) { return iban.indexOf(d) >= 0; });
+    function phoneIsInIban(phone) {
+      return ibanDigitStr && ibanDigitStr.indexOf(phone.replace(/\D/g, '')) >= 0;
     }
 
     var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
@@ -484,8 +480,9 @@ var CalendarWidget = (function () {
     onKey = function (e) { if (e.key === 'Escape') closeOverlay(); };
     document.addEventListener('keydown', onKey);
 
-    /* Mobile back button: push a history entry so back button closes the overlay */
-    history.pushState({ cwLightbox: true }, '');
+    /* Mobile back button: push a history entry so back button closes the overlay.
+       Guard against stacking multiple entries if the lightbox is opened rapidly. */
+    if (!(history.state && history.state.cwLightbox)) history.pushState({ cwLightbox: true }, '');
     onPop = function () { closeOverlay(true); };
     window.addEventListener('popstate', onPop);
 
