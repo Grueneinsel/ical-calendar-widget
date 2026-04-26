@@ -67,12 +67,14 @@
 
   /* Phase 1: local backup — renders immediately if available */
   IcalParser.fetchLocal()
-    .then(function (text) {
-      render(text, 'backup');
-      /* Phase 2: live URL in background — overwrites if newer data arrives */
+    .then(function (backupText) {
+      render(backupText, 'backup');
+      /* Phase 2: live URL in background — only re-render if data changed */
       if (icalUrl) {
         IcalParser.fetchLive(icalUrl)
-          .then(function (t) { render(t, 'live'); })
+          .then(function (liveText) {
+            if (liveText.trim() !== backupText.trim()) render(liveText, 'live');
+          })
           .catch(function () {});
       }
     })
