@@ -1,6 +1,18 @@
 /* main.js — widget entry point for widget.html (iframe mode) */
 'use strict';
 
+/* Fingerprint: sorted list of "UID|LAST-MODIFIED" pairs.
+   Immune to event re-ordering and DTSTAMP changes — only reacts to real content changes. */
+function icsFingerprint(ics) {
+  var pairs = [], uid = '', lm = '';
+  ics.split(/\r?\n/).forEach(function (line) {
+    if (line.indexOf('UID:') === 0)           uid = line.slice(4).trim();
+    if (line.indexOf('LAST-MODIFIED:') === 0) lm  = line.slice(14).trim();
+    if (line === 'END:VEVENT') { pairs.push(uid + '|' + lm); uid = ''; lm = ''; }
+  });
+  return pairs.sort().join('\n');
+}
+
 (function () {
   /* Prevent iframe scrollbar caused by sub-pixel rounding */
   if (window.self !== window.top) document.body.style.overflow = 'hidden';
@@ -73,8 +85,7 @@
       if (icalUrl) {
         IcalParser.fetchLive(icalUrl)
           .then(function (liveText) {
-            var strip = function (t) { return t.replace(/^DTSTAMP:[^\r\n]*\r?\n?/gm, '').trim(); };
-            if (strip(liveText) !== strip(backupText)) render(liveText, 'live');
+            if (icsFingerprint(liveText) !== icsFingerprint(backupText)) render(liveText, 'live');
           })
           .catch(function () {});
       }
