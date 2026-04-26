@@ -73,7 +73,8 @@
       if (icalUrl) {
         IcalParser.fetchLive(icalUrl)
           .then(function (liveText) {
-            if (liveText.trim() !== backupText.trim()) render(liveText, 'live');
+            var strip = function (t) { return t.replace(/^DTSTAMP:[^\r\n]*\r?\n?/gm, '').trim(); };
+            if (strip(liveText) !== strip(backupText)) render(liveText, 'live');
           })
           .catch(function () {});
       }

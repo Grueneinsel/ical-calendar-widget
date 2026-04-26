@@ -116,6 +116,6 @@ function render(text,source){var events=IcalParser.parse(text,{dev:devMode});var
 var calIdMatch=icalUrl.match(/\/ical\/([^\/]+)\//);var calId=null;if(calIdMatch){try{calId=decodeURIComponent(calIdMatch[1]);}
 catch(e){calId=calIdMatch[1];}}
 widget.setFlyers(flyers);widget.setEvents(events,{dev:devMode,source:source,calId:calId});}
-IcalParser.fetchLocal().then(function(backupText){render(backupText,'backup');if(icalUrl){IcalParser.fetchLive(icalUrl).then(function(liveText){if(liveText.trim()!==backupText.trim())render(liveText,'live');}).catch(function(){});}}).catch(function(){IcalParser.fetch(icalUrl).then(function(t){render(t,'live');}).catch(function(err){widget.setError(err.message);});});})();</script>
+IcalParser.fetchLocal().then(function(backupText){render(backupText,'backup');if(icalUrl){IcalParser.fetchLive(icalUrl).then(function(liveText){var strip=function(t){return t.replace(/^DTSTAMP:[^\r\n]*\r?\n?/gm,'').trim();};if(strip(liveText)!==strip(backupText))render(liveText,'live');}).catch(function(){});}}).catch(function(){IcalParser.fetch(icalUrl).then(function(t){render(t,'live');}).catch(function(err){widget.setError(err.message);});});})();</script>
 </body>
 </html>
