@@ -206,7 +206,8 @@ var CalendarWidget = (function () {
   function findDeadline(desc, eventStart) {
     if (!desc || !eventStart) return null;
     var cutoff = new Date(eventStart.getFullYear(), eventStart.getMonth(), eventStart.getDate());
-    var lines = desc.split(/\n|<br\s*\/?>/i)
+    var lines = desc.replace(/<\/?(li|p|div|ul|ol|br)[^>]*>/gi, '\n')
+      .split(/\n/)
       .map(function (l) { return l.replace(/<[^>]+>/g, '').trim(); })
       .filter(Boolean);
     // pass 1: keyword lines
@@ -685,7 +686,8 @@ var CalendarWidget = (function () {
       body.innerHTML = '<div class="cw-title">' + esc(titleText) + '</div>';
 
       /* price + age row */
-      var priceLines = ev.desc ? ev.desc.split(/\n|<br\s*\/?>/i)
+      var priceLines = ev.desc ? ev.desc.replace(/<\/?(li|p|div|ul|ol|br)[^>]*>/gi, '\n')
+        .split(/\n/)
         .map(function (l) { return l.replace(/<[^>]+>/g, '').trim(); })
         .filter(function (l) { return /€|Euro/i.test(l); })
         .filter(Boolean) : [];
