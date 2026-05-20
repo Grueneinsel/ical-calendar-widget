@@ -83,12 +83,13 @@ var CalendarWidget = (function () {
 
   /* build ordered fallback src list for a flyer/attachment object.
      thumbnail works for public Drive files without auth cookies;
-     lh3 and uc?export=view need cookies and are unreliable in iframes. */
+     proxy fallback handles incognito mode where Google may require cookies. */
   function flyerSrcs(f) {
+    var thumbUrl = f.driveId ? 'https://drive.google.com/thumbnail?id=' + f.driveId + '&sz=w1200' : null;
+    var proxyUrl = thumbUrl ? 'https://ical-proxy.grueneinsel1.workers.dev?url=' + encodeURIComponent(thumbUrl) : null;
     return (f.dataUrl ? [f.dataUrl] : [
-      f.driveId ? 'https://drive.google.com/thumbnail?id=' + f.driveId + '&sz=w1200' : null,
-      f.driveId ? 'https://drive.usercontent.google.com/download?id=' + f.driveId + '&export=view' : null,
-      f.driveId ? 'https://lh3.googleusercontent.com/d/' + f.driveId : null,
+      thumbUrl,
+      proxyUrl,
       f.url && f.url.indexOf('drive.google.com/open') < 0 ? f.url : null
     ]).filter(Boolean);
   }
