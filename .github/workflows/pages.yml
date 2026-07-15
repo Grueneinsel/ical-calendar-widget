@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   schedule:
-    - cron: '0 * * * *'   # stündlich ICS holen + deployen
+    - cron: '0 */6 * * *'   # alle 6 Stunden ICS holen + deployen
   push:
     branches: [main]
   workflow_dispatch:
