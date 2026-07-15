@@ -104,6 +104,9 @@
   flex: 1;
   padding: 9px 12px;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .cw-title {
   font-size: 13px;
