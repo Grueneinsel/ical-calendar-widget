@@ -207,7 +207,7 @@ var CalendarWidget = (function () {
   function findDeadline(desc, eventStart) {
     if (!desc || !eventStart) return null;
     var cutoff = new Date(eventStart.getFullYear(), eventStart.getMonth(), eventStart.getDate());
-    var lines = desc.replace(/<\/?(li|p|div|ul|ol|br)[^>]*>/gi, '\n')
+    var lines = desc.replace(/<\/?(li|p|div|ul|ol|br|tr|td|th)[^>]*>/gi, '\n')
       .split(/\n/)
       .map(function (l) { return l.replace(/<[^>]+>/g, '').trim(); })
       .filter(Boolean);
@@ -535,7 +535,11 @@ var CalendarWidget = (function () {
     }
 
     if (!items.length) {
-      this._showStatus('Keine bevorstehenden Termine.');
+      if (this.$status) { this.$status.remove(); this.$status = null; }
+      var hint = document.createElement('div');
+      hint.className = 'cw-hint';
+      hint.textContent = 'Aktuell keine Termine geplant – bald kommen neue Termine!';
+      this.$list.appendChild(hint);
       return;
     }
 
@@ -598,7 +602,7 @@ var CalendarWidget = (function () {
       body.innerHTML = '<div class="cw-title">' + esc(titleText) + '</div>';
 
       /* price + age row */
-      var priceLines = ev.desc ? ev.desc.replace(/<\/?(li|p|div|ul|ol|br)[^>]*>/gi, '\n')
+      var priceLines = ev.desc ? ev.desc.replace(/<\/?(li|p|div|ul|ol|br|tr|td|th)[^>]*>/gi, '\n')
         .split(/\n/)
         .map(function (l) { return l.replace(/<[^>]+>/g, '').trim(); })
         .filter(function (l) { return /€|Euro/i.test(l); })

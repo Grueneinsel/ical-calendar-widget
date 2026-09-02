@@ -157,7 +157,11 @@ var IcalParser = (function () {
       var line = lines[i];
 
       if (line === 'BEGIN:VEVENT') { ev = {}; continue; }
-      if (line === 'END:VEVENT')   { if (ev && ev.start) events.push(ev); ev = null; continue; }
+      if (line === 'END:VEVENT')   {
+        if (ev && ev.descHtml) ev.desc = ev.descHtml;
+        if (ev && ev.start) events.push(ev);
+        ev = null; continue;
+      }
       if (!ev) continue;
 
       var ci      = line.indexOf(':');
@@ -184,6 +188,13 @@ var IcalParser = (function () {
         }
         case 'SUMMARY':     ev.title    = unescape(val); break;
         case 'DESCRIPTION': ev.desc     = unescape(val); break;
+        case 'X-ALT-DESC': {
+          /* Google Calendar exports a naive plain-text DESCRIPTION alongside
+             the real HTML in X-ALT-DESC (e.g. <table> cells get concatenated
+             with no separator in DESCRIPTION). Prefer the HTML version. */
+          if (fullKey.indexOf('FMTTYPE=TEXT/HTML') >= 0) ev.descHtml = unescape(val);
+          break;
+        }
         case 'LOCATION':    ev.location = unescape(val); break;
         case 'URL':         ev.url      = val.trim(); break;
         case 'UID':         ev.uid      = val.trim(); break;
