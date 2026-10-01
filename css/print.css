@@ -166,6 +166,18 @@ body.cw-print-mode {
 /* left: January–June, right: July–December (see print.js fit()) */
 .cw-ps-col { flex: 1 1 0; min-width: 0; }
 
+/* column heading: "1. Halbjahr" / "2. Halbjahr" */
+.cw-ps-half {
+  margin-bottom: 0.7em;
+  padding-bottom: 0.3em;
+  border-bottom: 0.18em solid var(--ps-green);
+  font-size: 1.25em;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.cw-ps-none { color: var(--ps-muted); font-style: italic; }
+
 .cw-ps-block { margin-bottom: 1em; }
 .cw-ps-month {
   background: var(--ps-green);

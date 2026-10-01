@@ -84,9 +84,14 @@ var CalendarPrint = (function () {
   function fit(list, blocks) {
     if (!blocks.length) return;
     var cols = [el('div', 'cw-ps-col'), el('div', 'cw-ps-col')];
-    list.appendChild(cols[0]);
-    list.appendChild(cols[1]);
+    cols.forEach(function (col, i) {
+      col.appendChild(el('div', 'cw-ps-half', (i + 1) + '. Halbjahr'));
+      list.appendChild(col);
+    });
     blocks.forEach(function (b) { cols[+b.dataset.month < 6 ? 0 : 1].appendChild(b); });
+    cols.forEach(function (col) {
+      if (col.children.length === 1) col.appendChild(el('div', 'cw-ps-none', 'Noch keine Termine.'));
+    });
 
     var scale = SCALE_MAX;
     function overflows() {
