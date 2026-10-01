@@ -53,17 +53,11 @@ var CalendarPrint = (function () {
     return eventsOfYear(events, y + 1).length ? [y, y + 1] : [y];
   }
 
-  /* layout 'a5' = flyer version: two A5 copies side by side on A4 landscape */
-  function printUrl(year, layout) {
+  function printUrl(year) {
     var p = new URLSearchParams(location.search);
     p.delete('dev');
     p.set('print', year);
-    if (layout) p.set('layout', layout); else p.delete('layout');
     return location.pathname + '?' + p.toString();
-  }
-
-  function isFlyerLayout() {
-    return new URLSearchParams(location.search).get('layout') === 'a5';
   }
 
   /* ── print links in the widget's bottom bar ── */
@@ -74,19 +68,13 @@ var CalendarPrint = (function () {
     if (old) old.remove();
 
     var links = el('span', 'cw-print-links');
-    function add(label, href, title) {
-      var a = el('a', 'cw-print-btn', label);
-      a.href   = href;
+    availableYears(events).forEach(function (year) {
+      var a = el('a', 'cw-print-btn', '🖨 ' + year + ' Drucken');
+      a.href   = printUrl(year);
       a.target = '_blank';
       a.rel    = 'noopener';
-      a.title  = title;
+      a.title  = 'Jahresübersicht ' + year + ' als DIN-A4-Seite oder als Flyer (2× A5) drucken';
       links.appendChild(a);
-    }
-    availableYears(events).forEach(function (year) {
-      add('🖨 ' + year + ' Drucken', printUrl(year),
-        'Jahresübersicht ' + year + ' als DIN-A4-Seite drucken oder als PDF speichern');
-      add('🖨 ' + year + ' Flyer 2× A5', printUrl(year, 'a5'),
-        'Jahresübersicht ' + year + ' als Flyer drucken: zweimal DIN A5 nebeneinander auf A4 quer');
     });
     bar.appendChild(links);
   }
@@ -188,12 +176,9 @@ var CalendarPrint = (function () {
     return strip;
   }
 
-  var autoPrinted = false;
-
-  /* ── A4 sheet (or, as flyer, two A5 copies of it on A4 landscape) ── */
-  function renderSheet(root, events, year) {
+  /* ── A4 sheet; with `flyer` two A5 copies of it side by side on A4 landscape ── */
+  function renderSheet(root, events, year, flyer) {
     var items = eventsOfYear(events, year);
-    var flyer = isFlyerLayout();
     document.title = 'BTC Jugend – Termine ' + year;
     document.body.classList.add('cw-print-mode');
     /* page size only here, so normal printing of the widget stays untouched */
@@ -212,15 +197,23 @@ var CalendarPrint = (function () {
     var printBtn = el('button', 'cw-ps-print', '🖨 Drucken / als PDF speichern');
     printBtn.addEventListener('click', function () { window.print(); });
     bar.appendChild(printBtn);
+    /* flyer: no preview — switch layout, print, switch back */
+    var flyerBtn = el('button', 'cw-ps-print', '🖨 Flyer drucken (2× A5)');
+    flyerBtn.title = 'Zweimal DIN A5 nebeneinander auf A4 quer';
+    flyerBtn.addEventListener('click', function () {
+      renderSheet(root, events, year, true);
+      window.addEventListener('afterprint', function () {
+        renderSheet(root, events, year, false);
+      }, { once: true });
+      setTimeout(function () { window.print(); }, 50);
+    });
+    bar.appendChild(flyerBtn);
     availableYears(events).forEach(function (y) {
       if (y === year) return;
       var a = el('a', 'cw-ps-year', 'Termine ' + y + ' →');
-      a.href = printUrl(y, flyer ? 'a5' : null);
+      a.href = printUrl(y);
       bar.appendChild(a);
     });
-    var other = el('a', 'cw-ps-year', flyer ? 'Als DIN A4' : 'Als Flyer (2× A5)');
-    other.href = printUrl(year, flyer ? null : 'a5');
-    bar.appendChild(other);
     root.appendChild(bar);
 
     var sheet = el('div', 'cw-ps-sheet');
@@ -293,12 +286,6 @@ var CalendarPrint = (function () {
     if (flyer) outer.appendChild(el('div', 'cw-ps-slot')).appendChild(sheet.cloneNode(true));
     fitScreen(outer);
     window.onresize = function () { fitScreen(outer); };
-
-    /* the flyer needs no preview: open the print dialog right away (once) */
-    if (flyer && !autoPrinted) {
-      autoPrinted = true;
-      setTimeout(function () { window.print(); }, 300);
-    }
   }
 
   return { addButtons: addButtons, renderSheet: renderSheet };
