@@ -176,7 +176,7 @@ var CalendarPrint = (function () {
     return strip;
   }
 
-  /* Render `sheet` into a square PNG (Instagram 1:1) and download it.
+  /* Render `sheet` into a square PNG (social media, 1:1) and download it.
      The sheet is cloned with all page styles into an SVG <foreignObject>,
      which is then drawn onto a canvas. */
   function downloadPng(sheet, size, filename) {
@@ -240,7 +240,7 @@ var CalendarPrint = (function () {
 
   /* ── A4 sheet ──
      mode 'flyer':  two A5 copies of it side by side on A4 landscape
-     mode 'square': 1:1 version for Instagram (see downloadPng)
+     mode 'square': 1:1 version for social media (see downloadPng)
      Returns the sheet element. */
   function renderSheet(root, events, year, mode) {
     var items = eventsOfYear(events, year);
@@ -274,18 +274,18 @@ var CalendarPrint = (function () {
       setTimeout(function () { window.print(); }, 50);
     });
     bar.appendChild(flyerBtn);
-    /* Instagram: no preview either — render square, download PNG, switch back */
-    var instaBtn = el('button', 'cw-ps-print', '📷 Instagram-Bild (1:1)');
-    instaBtn.title = 'Quadratisches Bild (1080 × 1080) herunterladen';
-    instaBtn.addEventListener('click', function () {
+    /* social media: no preview either — render square, download PNG, switch back */
+    var socialBtn = el('button', 'cw-ps-print', '📷 Social-Media-Bild (1:1)');
+    socialBtn.title = 'Quadratisches Bild (2160 × 2160) für Instagram, WhatsApp & Co. herunterladen';
+    socialBtn.addEventListener('click', function () {
       var square = renderSheet(root, events, year, 'square');
       var back = function (err) {
         var again = renderSheet(root, events, year);
         if (err) again.parentNode.insertBefore(el('div', 'cw-ps-error', err.message), again);
       };
-      downloadPng(square, 1080, 'btc-jugend-termine-' + year + '.png').then(function () { back(); }, back);
+      downloadPng(square, 2160, 'btc-jugend-termine-' + year + '.png').then(function () { back(); }, back);
     });
-    bar.appendChild(instaBtn);
+    bar.appendChild(socialBtn);
     availableYears(events).forEach(function (y) {
       if (y === year) return;
       var a = el('a', 'cw-ps-year', 'Termine ' + y + ' →');

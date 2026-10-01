@@ -9,7 +9,7 @@ Live: <https://grueneinsel.github.io/ical-calendar-widget/widget.html?btc>
 | Adresse | Wirkung |
 | --- | --- |
 | `widget.html?btc` | BTC-Jugendkalender (Adresse aus `js/vars.js`), inkl. Druck-Buttons |
-| `widget.html?btc&print=2026` | DIN-A4-Jahresübersicht 2026; Buttons: A4 drucken, als Flyer (2× DIN A5 auf A4 quer) oder als Instagram-Bild (1:1, PNG) |
+| `widget.html?btc&print=2026` | DIN-A4-Jahresübersicht 2026; Buttons: A4 drucken, als Flyer (2× DIN A5 auf A4 quer) oder als Social-Media-Bild (1:1, PNG 2160 × 2160) |
 | `widget.html?url=<ics-url>` | beliebiger iCal-Feed, ohne Druckfunktion |
 | `…&dev` | Entwicklermodus: zeigt auch vergangene Termine |
 

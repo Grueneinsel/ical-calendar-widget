@@ -317,7 +317,7 @@ body.cw-print-mode {
 .cw-ps-disclaimer { font-style: italic; }
 .cw-ps-stand { white-space: nowrap; font-weight: 700; }
 
-/* ── Instagram 1:1: square sheet, exported as PNG by print.js ──
+/* ── social media 1:1: square sheet, exported as PNG by print.js ──
    No QR codes (nobody scans their own screen) — the strip keeps the names. */
 .cw-ps-square {
   height: 210mm;
