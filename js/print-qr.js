@@ -78,7 +78,7 @@ var CW_PRINT_QR = [
   },
   {
     title: 'WhatsApp-Kanal',
-    hint:  'Kanal abonnieren',
+    hint:  'Jugendevents_\nBaukauerTurnClub',
     url:   'https://www.whatsapp.com/channel/0029VbC7OV05a24698MGeO3H',
     qr:    'https://whatsapp.com/channel/0029VbC7OV05a24698MGeO3H',
     rows: [
