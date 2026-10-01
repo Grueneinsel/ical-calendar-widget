@@ -178,8 +178,8 @@ var CalendarPrint = (function () {
 
   /* ── background pattern, seeded by the year ──
      Every year gets its own look so two calendars are never mixed up:
-     the pattern family rotates with the year (so neighbouring years always
-     differ clearly), its details come from a PRNG seeded with the year.
+     the pattern family rotates with the year in a three-year cycle (so
+     neighbouring years always differ clearly), its details come from a PRNG seeded with the year.
      w/h in mm (= viewBox units). */
   function yearPattern(year, w, h) {
     /* mulberry32 */
@@ -194,41 +194,9 @@ var CalendarPrint = (function () {
 
     var body = '', x, y, i;
     var reach = Math.sqrt(w * w + h * h);
-    switch (((year % 5) + 5) % 5) {
-      case 0: /* concentric rings */
-        var cx = w * (0.55 + 0.5 * rnd()), cy = h * (0.02 + 0.2 * rnd()), step = 7 + 6 * rnd();
-        for (i = 1; i * step < reach * 1.2; i++) {
-          body += '<circle cx="' + f(cx) + '" cy="' + f(cy) + '" r="' + f(i * step) +
-            '" fill="none" stroke-width="' + f(step * (0.15 + 0.45 * rnd())) + '"/>';
-        }
-        break;
-      case 1: /* diagonal stripes */
-        var angle = (rnd() < 0.5 ? -1 : 1) * (25 + 40 * rnd());
-        body += '<g transform="rotate(' + f(angle) + ' ' + f(w / 2) + ' ' + f(h / 2) + ')">';
-        for (x = w / 2 - reach; x < w / 2 + reach;) {
-          var sw = 1.5 + 7 * rnd();
-          body += '<rect x="' + f(x) + '" y="' + f(h / 2 - reach) + '" width="' + f(sw) +
-            '" height="' + f(2 * reach) + '"/>';
-          x += sw + 4 + 9 * rnd();
-        }
-        body += '</g>';
-        break;
-      case 2: /* triangle mosaic */
-        var g = 15 + 9 * rnd();
-        for (y = 0; y < h; y += g) {
-          for (x = 0; x < w; x += g) {
-            var flip = rnd() < 0.5;
-            [0, 1].forEach(function (half) {
-              if (rnd() > 0.5) return;
-              var pts = flip
-                ? (half ? [x, y, x + g, y, x, y + g] : [x + g, y, x + g, y + g, x, y + g])
-                : (half ? [x, y, x + g, y, x + g, y + g] : [x, y, x + g, y + g, x, y + g]);
-              body += '<polygon points="' + pts.map(f).join(' ') + '" opacity="' + f(0.35 + 0.65 * rnd()) + '"/>';
-            });
-          }
-        }
-        break;
-      case 3: /* halftone dots */
+    /* three families in turn: 2027 dots, 2028 waves, 2029 rings, 2030 dots … */
+    switch ((((year - 2027) % 3) + 3) % 3) {
+      case 0: /* halftone dots */
         var d = 7 + 3 * rnd(), fx = 0.02 + 0.05 * rnd(), fy = 0.02 + 0.05 * rnd(), ph = 6.28 * rnd();
         for (y = d / 2; y < h; y += d) {
           for (x = d / 2; x < w; x += d) {
@@ -237,7 +205,7 @@ var CalendarPrint = (function () {
           }
         }
         break;
-      default: /* waves */
+      case 1: /* waves */
         var gap = 9 + 5 * rnd(), amp = 4 + 7 * rnd(), len = 14 + 16 * rnd();
         for (y = -amp; y < h + amp; y += gap) {
           var phase = 6.28 * rnd(), path = '';
@@ -245,6 +213,13 @@ var CalendarPrint = (function () {
             path += (path ? 'L' : 'M') + f(x) + ' ' + f(y + amp * Math.sin(x / len + phase));
           }
           body += '<path d="' + path + '" fill="none" stroke-width="' + f(1 + 2.2 * rnd()) + '"/>';
+        }
+        break;
+      default: /* concentric rings */
+        var cx = w * (0.55 + 0.5 * rnd()), cy = h * (0.02 + 0.2 * rnd()), step = 7 + 6 * rnd();
+        for (i = 1; i * step < reach * 1.2; i++) {
+          body += '<circle cx="' + f(cx) + '" cy="' + f(cy) + '" r="' + f(i * step) +
+            '" fill="none" stroke-width="' + f(step * (0.15 + 0.45 * rnd())) + '"/>';
         }
     }
 
