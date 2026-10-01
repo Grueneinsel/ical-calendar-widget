@@ -1,0 +1,262 @@
+/* print.css — BTC Jugend: Druck-Links in der Fußleiste + DIN-A4 Jahresübersicht */
+
+/* ── print links in the widget's bottom bar ── */
+.cw-print-links {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-left: 10px;
+  vertical-align: middle;
+  font-style: normal;
+}
+.cw-container .cw-print-btn {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 11px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.cw-container .cw-print-btn:hover {
+  background: var(--accent-dark);
+  transform: translateY(-1px) scale(1.04);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+}
+
+/* ── A4 sheet ── */
+@page { size: A4 portrait; margin: 0; }
+
+body.cw-print-mode {
+  background: #d9dcda;
+  overflow: auto !important;
+}
+
+.cw-print-root {
+  --ps-green:      #2ca769;
+  --ps-green-dark: #1f8552;
+  --ps-green-soft: #e9f6ef;
+  --ps-black:      #0e0e0c;
+  --ps-muted:      #5d635f;
+  --ps-line:       #d5dbd7;
+
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ps-black);
+  padding: 8px 8px 24px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.cw-print-root *, .cw-print-root *::before, .cw-print-root *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* toolbar (screen only) */
+.cw-ps-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 16px;
+  padding: 8px 0 14px;
+}
+.cw-ps-print {
+  background: var(--ps-green);
+  color: #fff;
+  border: none;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 10px 22px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  transition: background 0.15s, transform 0.15s;
+}
+.cw-ps-print:hover { background: var(--ps-green-dark); transform: scale(1.03); }
+.cw-ps-year {
+  color: var(--ps-black);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.cw-ps-sheet {
+  position: relative;
+  width: 210mm;
+  height: 297mm;
+  margin: 0 auto;
+  padding: 11mm 12mm 9mm;
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+/* green corner accent, top right */
+.cw-ps-sheet::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 62mm; height: 62mm;
+  background: var(--ps-green);
+  clip-path: polygon(100% 0, 0 0, 100% 100%);
+  opacity: 0.12;
+}
+
+/* header */
+.cw-ps-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6mm;
+  flex-shrink: 0;
+}
+.cw-ps-logo {
+  flex-shrink: 0;
+  width: 30mm;
+  height: 30mm;
+  background: url('../BTC Logo_fix.svg') center / contain no-repeat;
+}
+.cw-ps-name { flex: 1; min-width: 0; }
+.cw-ps-jugend {
+  font-size: 40pt;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.5pt;
+}
+.cw-ps-sub {
+  margin-top: 2mm;
+  font-size: 11pt;
+  font-weight: 700;
+  letter-spacing: 3.2pt;
+  text-transform: uppercase;
+  color: var(--ps-green-dark);
+}
+.cw-ps-yearnum {
+  flex-shrink: 0;
+  font-size: 46pt;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -1pt;
+  color: var(--ps-green);
+}
+
+/* black rule with green lead-in */
+.cw-ps-rule {
+  flex-shrink: 0;
+  height: 1.6mm;
+  margin: 5mm 0 5mm;
+  background: linear-gradient(to right, var(--ps-green) 0, var(--ps-green) 36mm, var(--ps-black) 36mm);
+}
+
+/* month blocks — font size is driven by --cw-ps-scale (see print.js fit()) */
+.cw-ps-list {
+  --cw-ps-scale: 1;
+  flex: 1;
+  min-height: 0;
+  column-count: 2;
+  column-gap: 7mm;
+  column-fill: balance;
+  font-size: calc(10pt * var(--cw-ps-scale));
+  line-height: 1.25;
+}
+.cw-ps-list.cw-ps-cols3 { column-count: 3; column-gap: 5mm; }
+
+.cw-ps-block { margin-bottom: 1em; }
+.cw-ps-month {
+  background: var(--ps-green);
+  color: #fff;
+  padding: 0.38em 0.8em;
+  font-size: 0.92em;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  border-left: 0.4em solid var(--ps-black);
+  break-after: avoid;
+  page-break-after: avoid;
+}
+.cw-ps-row {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--ps-line);
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.cw-ps-date {
+  flex-shrink: 0;
+  width: 7.2em;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-items: baseline;
+  gap: 0 0.4em;
+  padding: 0.42em 0.5em;
+  background: var(--ps-green-soft);
+  border-right: 0.22em solid var(--ps-black);
+  white-space: nowrap;
+}
+.cw-ps-day { font-weight: 800; }
+.cw-ps-wd {
+  font-size: 0.72em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ps-muted);
+}
+.cw-ps-title {
+  flex: 1;
+  min-width: 0;
+  padding: 0.42em 0.6em;
+  font-weight: 600;
+  overflow-wrap: break-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.cw-ps-cancel .cw-ps-title { color: var(--ps-muted); text-decoration: line-through; }
+.cw-ps-cancel .cw-ps-date  { background: #f1f1f1; }
+.cw-ps-tag {
+  display: inline-block;
+  margin-left: 0.5em;
+  font-size: 0.72em;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.cw-ps-empty {
+  padding: 2em 0;
+  font-size: 1.1em;
+  color: var(--ps-muted);
+}
+
+/* footer */
+.cw-ps-foot {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 8mm;
+  margin-top: 4mm;
+  padding-top: 2.5mm;
+  border-top: 0.5mm solid var(--ps-black);
+  font-size: 8pt;
+  color: var(--ps-muted);
+}
+.cw-ps-disclaimer { font-style: italic; }
+.cw-ps-stand { white-space: nowrap; font-weight: 700; }
+
+@media print {
+  html, body.cw-print-mode { background: #fff !important; margin: 0 !important; }
+  .cw-print-root { padding: 0; }
+  .cw-ps-toolbar { display: none !important; }
+  .cw-ps-sheet {
+    zoom: 1 !important;
+    /* a hair under A4 so rounding never spills onto a second page */
+    height: 296mm;
+    margin: 0;
+    box-shadow: none !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

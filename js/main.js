@@ -10,7 +10,38 @@
   var params  = new URLSearchParams(location.search);
   var icalUrl = params.get('url') || (params.has('btc') ? cfg.calendarUrl : '') || '';
   var devMode = params.has('dev');
-  var widget  = new CalendarWidget(document.getElementById('cw-root'));
+  var rootEl  = document.getElementById('cw-root');
+
+  /* BTC calendar only: print links in the bottom bar + ?print=YEAR A4 sheet */
+  var isBtc     = params.has('btc') || (!!cfg.calendarUrl && icalUrl === cfg.calendarUrl);
+  var canPrint  = isBtc && typeof CalendarPrint !== 'undefined';
+  var printYear = canPrint ? parseInt(params.get('print'), 10) || 0 : 0;
+
+  if (printYear) {
+    function renderPrint(text) {
+      /* dev: true → keep the whole year, including past events */
+      CalendarPrint.renderSheet(rootEl, IcalParser.parse(text, { dev: true }), printYear);
+    }
+    IcalParser.fetchLocal()
+      .then(function (backupText) {
+        renderPrint(backupText);
+        if (icalUrl) {
+          IcalParser.fetchLive(icalUrl)
+            .then(function (liveText) {
+              if (IcalParser.fingerprint(liveText) !== IcalParser.fingerprint(backupText)) renderPrint(liveText);
+            })
+            .catch(function () {});
+        }
+      })
+      .catch(function () {
+        IcalParser.fetch(icalUrl)
+          .then(renderPrint)
+          .catch(function (err) { rootEl.textContent = err.message; });
+      });
+    return;
+  }
+
+  var widget  = new CalendarWidget(rootEl);
 
   if (!icalUrl && !params.has('btc')) {
     widget.setHint();
@@ -20,7 +51,6 @@
   /* Auto-resize: notify parent whenever content height changes.
      Use #cw-root offsetHeight (not scrollHeight) so shrinking also triggers. */
   if (window.ResizeObserver) {
-    var rootEl = document.getElementById('cw-root');
     new ResizeObserver(function () {
       window.parent.postMessage(
         { type: 'cw-resize', height: rootEl.offsetHeight }, '*'
@@ -64,6 +94,7 @@
 
     widget.setFlyers(flyers);
     widget.setEvents(events, { dev: devMode, source: source, calId: calId });
+    if (canPrint) CalendarPrint.addButtons(rootEl, events);
   }
 
   /* Phase 1: local backup — renders immediately if available */
