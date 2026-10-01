@@ -111,21 +111,30 @@ var CalendarPrint = (function () {
     if (w > avail) sheet.style.zoom = (avail / w).toFixed(3);
   }
 
-  /* QR module matrix (rows of '0'/'1') → inline SVG with a 1-module quiet zone */
+  /* QR module matrix (rows of '0'/'1') → inline SVG in BTC style: dots for
+     the data modules, finder eyes with a green centre, white quiet zone.
+     Keep the eyes (almost) square — strongly rounded ones stop scanning. */
   function qrSvg(rows) {
-    var n = rows.length, d = '';
+    var n = rows.length, body = '', Q = 2; /* quiet zone in modules */
+    function inEye(x, y) {
+      return (x < 7 && y < 7) || (x >= n - 7 && y < 7) || (x < 7 && y >= n - 7);
+    }
     rows.forEach(function (row, y) {
       for (var x = 0; x < n; x++) {
-        if (row.charAt(x) !== '1') continue;
-        var run = 1;
-        while (x + run < n && row.charAt(x + run) === '1') run++;
-        d += 'M' + (x + 1) + ' ' + (y + 1) + 'h' + run + 'v1h-' + run + 'z';
-        x += run - 1;
+        if (row.charAt(x) === '1' && !inEye(x, y)) {
+          body += '<circle cx="' + (x + Q + 0.5) + '" cy="' + (y + Q + 0.5) + '" r="0.48"/>';
+        }
       }
     });
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + (n + 2) + ' ' + (n + 2) +
-      '" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="#fff"/>' +
-      '<path fill="#0e0e0c" d="' + d + '"/></svg>';
+    [[0, 0], [n - 7, 0], [0, n - 7]].forEach(function (e) {
+      var x = e[0] + Q, y = e[1] + Q;
+      body += '<rect x="' + x + '" y="' + y + '" width="7" height="7" rx="0.5"/>' +
+        '<rect x="' + (x + 1) + '" y="' + (y + 1) + '" width="5" height="5" rx="0.2" fill="#fff"/>' +
+        '<rect x="' + (x + 2) + '" y="' + (y + 2) + '" width="3" height="3" rx="0.6" fill="#1f8552"/>';
+    });
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + (n + 2 * Q) + ' ' + (n + 2 * Q) +
+      '"><rect width="100%" height="100%" rx="1.6" fill="#fff"/>' +
+      '<g fill="#0e0e0c">' + body + '</g></svg>';
   }
 
   /* strip with the QR codes: website, Instagram, WhatsApp channel */

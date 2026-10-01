@@ -265,15 +265,16 @@ body.cw-print-mode {
 }
 .cw-ps-qr {
   flex-shrink: 0;
-  width: 22mm;
-  height: 22mm;
+  width: 23mm;
+  height: 23mm;
 }
 .cw-ps-qr svg { display: block; width: 100%; height: 100%; }
 .cw-ps-channel-text { min-width: 0; }
 .cw-ps-channel-title {
-  font-size: 10.5pt;
+  font-size: 10pt;
   font-weight: 900;
   line-height: 1.15;
+  white-space: nowrap;
 }
 .cw-ps-channel-hint {
   margin-top: 1mm;
@@ -281,6 +282,7 @@ body.cw-print-mode {
   font-weight: 600;
   line-height: 1.25;
   color: var(--ps-green-dark);
+  white-space: pre-line;
   overflow-wrap: anywhere;
 }
 
