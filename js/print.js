@@ -176,6 +176,91 @@ var CalendarPrint = (function () {
     return strip;
   }
 
+  /* ── background pattern, seeded by the year ──
+     Every year gets its own look so two calendars are never mixed up:
+     the pattern family rotates with the year (so neighbouring years always
+     differ clearly), its details come from a PRNG seeded with the year.
+     w/h in mm (= viewBox units). */
+  function yearPattern(year, w, h) {
+    /* mulberry32 */
+    var t = (year * 2654435761) >>> 0;
+    function rnd() {
+      t = (t + 0x6D2B79F5) >>> 0;
+      var r = Math.imul(t ^ (t >>> 15), 1 | t);
+      r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r;
+      return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+    }
+    function f(n) { return n.toFixed(2); }
+
+    var body = '', x, y, i;
+    var reach = Math.sqrt(w * w + h * h);
+    switch (((year % 5) + 5) % 5) {
+      case 0: /* concentric rings */
+        var cx = w * (0.55 + 0.5 * rnd()), cy = h * (0.02 + 0.2 * rnd()), step = 7 + 6 * rnd();
+        for (i = 1; i * step < reach * 1.2; i++) {
+          body += '<circle cx="' + f(cx) + '" cy="' + f(cy) + '" r="' + f(i * step) +
+            '" fill="none" stroke-width="' + f(step * (0.15 + 0.45 * rnd())) + '"/>';
+        }
+        break;
+      case 1: /* diagonal stripes */
+        var angle = (rnd() < 0.5 ? -1 : 1) * (25 + 40 * rnd());
+        body += '<g transform="rotate(' + f(angle) + ' ' + f(w / 2) + ' ' + f(h / 2) + ')">';
+        for (x = w / 2 - reach; x < w / 2 + reach;) {
+          var sw = 1.5 + 7 * rnd();
+          body += '<rect x="' + f(x) + '" y="' + f(h / 2 - reach) + '" width="' + f(sw) +
+            '" height="' + f(2 * reach) + '"/>';
+          x += sw + 4 + 9 * rnd();
+        }
+        body += '</g>';
+        break;
+      case 2: /* triangle mosaic */
+        var g = 15 + 9 * rnd();
+        for (y = 0; y < h; y += g) {
+          for (x = 0; x < w; x += g) {
+            var flip = rnd() < 0.5;
+            [0, 1].forEach(function (half) {
+              if (rnd() > 0.5) return;
+              var pts = flip
+                ? (half ? [x, y, x + g, y, x, y + g] : [x + g, y, x + g, y + g, x, y + g])
+                : (half ? [x, y, x + g, y, x + g, y + g] : [x, y, x + g, y + g, x, y + g]);
+              body += '<polygon points="' + pts.map(f).join(' ') + '" opacity="' + f(0.35 + 0.65 * rnd()) + '"/>';
+            });
+          }
+        }
+        break;
+      case 3: /* halftone dots */
+        var d = 7 + 3 * rnd(), fx = 0.02 + 0.05 * rnd(), fy = 0.02 + 0.05 * rnd(), ph = 6.28 * rnd();
+        for (y = d / 2; y < h; y += d) {
+          for (x = d / 2; x < w; x += d) {
+            body += '<circle cx="' + f(x) + '" cy="' + f(y) + '" r="' +
+              f(d * 0.42 * (0.2 + 0.8 * Math.abs(Math.sin(x * fx + y * fy + ph)))) + '"/>';
+          }
+        }
+        break;
+      default: /* waves */
+        var gap = 9 + 5 * rnd(), amp = 4 + 7 * rnd(), len = 14 + 16 * rnd();
+        for (y = -amp; y < h + amp; y += gap) {
+          var phase = 6.28 * rnd(), path = '';
+          for (x = -2; x <= w + 2; x += 2) {
+            path += (path ? 'L' : 'M') + f(x) + ' ' + f(y + amp * Math.sin(x / len + phase));
+          }
+          body += '<path d="' + path + '" fill="none" stroke-width="' + f(1 + 2.2 * rnd()) + '"/>';
+        }
+    }
+
+    /* strong in the top-right and bottom-left corners, calm in the middle */
+    return '<svg class="cw-ps-pattern" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + w + ' ' + h +
+      '" preserveAspectRatio="none" aria-hidden="true"><defs>' +
+      '<radialGradient id="cw-ps-fade-a" gradientUnits="userSpaceOnUse" cx="' + w + '" cy="0" r="' + f(reach * 0.62) + '">' +
+      '<stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>' +
+      '<radialGradient id="cw-ps-fade-b" gradientUnits="userSpaceOnUse" cx="0" cy="' + h + '" r="' + f(reach * 0.5) + '">' +
+      '<stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>' +
+      '<mask id="cw-ps-fade"><rect width="' + w + '" height="' + h + '" fill="#555"/>' +
+      '<rect width="' + w + '" height="' + h + '" fill="url(#cw-ps-fade-a)"/>' +
+      '<rect width="' + w + '" height="' + h + '" fill="url(#cw-ps-fade-b)"/></mask></defs>' +
+      '<g mask="url(#cw-ps-fade)" fill="#2ca769" stroke="#2ca769">' + body + '</g></svg>';
+  }
+
   /* Render `sheet` into a square PNG (social media, 1:1) and download it.
      The sheet is cloned with all page styles into an SVG <foreignObject>,
      which is then drawn onto a canvas. */
@@ -296,6 +381,8 @@ var CalendarPrint = (function () {
 
     var sheet = el('div', 'cw-ps-sheet' + (mode === 'square' ? ' cw-ps-square' : ''));
     sheet.lang = 'de';
+    /* always the A4 pattern — the square version shows its upper part */
+    sheet.insertAdjacentHTML('beforeend', yearPattern(year, 210, 297));
 
     /* header: logo + "Jugend" + year */
     var head = el('div', 'cw-ps-head');

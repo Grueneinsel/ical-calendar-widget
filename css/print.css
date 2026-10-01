@@ -94,16 +94,15 @@ body.cw-print-mode {
   flex-direction: column;
   overflow: hidden;
 }
-/* green corner accent, top right */
-.cw-ps-sheet::before {
-  content: '';
+/* background pattern, seeded by the year (see print.js yearPattern()) */
+.cw-ps-pattern {
   position: absolute;
-  top: 0; right: 0;
-  width: 62mm; height: 62mm;
-  background: var(--ps-green);
-  clip-path: polygon(100% 0, 0 0, 100% 100%);
-  opacity: 0.12;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  opacity: 0.2;
+  pointer-events: none;
 }
+.cw-ps-sheet > :not(.cw-ps-pattern) { position: relative; }
 
 /* header */
 .cw-ps-head {
@@ -193,6 +192,7 @@ body.cw-print-mode {
 .cw-ps-row {
   display: flex;
   align-items: stretch;
+  background: #fff;
   border-bottom: 1px solid var(--ps-line);
   break-inside: avoid;
   page-break-inside: avoid;
@@ -323,6 +323,8 @@ body.cw-print-mode {
   height: 210mm;
   padding: 9mm 11mm 7mm;
 }
+/* same pattern as on A4, unstretched: its upper 210 of 297mm */
+.cw-ps-square .cw-ps-pattern { height: 297mm; }
 .cw-ps-square .cw-ps-logo { width: 25mm; height: 25mm; }
 .cw-ps-square .cw-ps-jugend { font-size: 34pt; }
 .cw-ps-square .cw-ps-yearnum { font-size: 40pt; }
