@@ -159,14 +159,18 @@ var CalendarPrint = (function () {
         list.appendChild(block);
         lastMonth = m;
       }
-      var cancelled = ev.status === 'CANCELLED';
+      /* drop the "BTC Jugend: " style prefix; keep a cancellation noted there */
+      var name = ev.title || '(kein Titel)';
+      var pre  = /^([^:]*):\s+(\S.*)$/.exec(name);
+      if (pre) name = pre[2];
+      var cancelled = ev.status === 'CANCELLED' || !!(pre && /abgesagt/i.test(pre[1]));
       var row = el('div', 'cw-ps-row' + (cancelled ? ' cw-ps-cancel' : ''));
       var lbl = dateLabel(ev);
       var date = el('div', 'cw-ps-date');
       date.appendChild(el('span', 'cw-ps-day', lbl.day));
       date.appendChild(el('span', 'cw-ps-wd', lbl.wd));
       row.appendChild(date);
-      var title = el('div', 'cw-ps-title', ev.title || '(kein Titel)');
+      var title = el('div', 'cw-ps-title', name);
       if (cancelled) title.appendChild(el('span', 'cw-ps-tag', 'abgesagt'));
       row.appendChild(title);
       block.appendChild(row);
