@@ -331,7 +331,7 @@ body.cw-print-mode {
 .cw-ps-square .cw-ps-rule { margin: 4mm 0; }
 .cw-ps-square .cw-ps-qr { display: none; }
 .cw-ps-square .cw-ps-channel-body { padding: 2mm 3.5mm; }
-.cw-ps-square .cw-ps-channel-hint { font-size: 9pt; }
+.cw-ps-square .cw-ps-channel-hint { font-size: 8.5pt; white-space: nowrap; }
 .cw-ps-square .cw-ps-channel-title { font-size: 9.5pt; }
 
 .cw-ps-error {

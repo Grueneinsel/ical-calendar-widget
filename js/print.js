@@ -159,7 +159,7 @@ var CalendarPrint = (function () {
   }
 
   /* strip with the QR codes: website, Instagram, WhatsApp channel */
-  function channels() {
+  function channels(oneLine) {
     var strip = el('div', 'cw-ps-channels');
     (typeof CW_PRINT_QR !== 'undefined' ? CW_PRINT_QR : []).forEach(function (c) {
       var item = el('a', 'cw-ps-channel');
@@ -169,7 +169,7 @@ var CalendarPrint = (function () {
       var code = el('div', 'cw-ps-qr');
       code.innerHTML = qrSvg(c.rows);
       body.appendChild(code);
-      body.appendChild(el('div', 'cw-ps-channel-hint', c.hint));
+      body.appendChild(el('div', 'cw-ps-channel-hint', oneLine ? c.hint.replace(/\n/g, '') : c.hint));
       item.appendChild(body);
       strip.appendChild(item);
     });
@@ -407,7 +407,8 @@ var CalendarPrint = (function () {
     });
     sheet.appendChild(list);
 
-    sheet.appendChild(channels());
+    /* square version: no QR codes, so the names fit on one line each */
+    sheet.appendChild(channels(mode === 'square'));
 
     /* footer */
     var foot = el('div', 'cw-ps-foot');
