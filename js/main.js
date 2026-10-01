@@ -12,8 +12,8 @@
   var devMode = params.has('dev');
   var rootEl  = document.getElementById('cw-root');
 
-  /* BTC calendar only: print links in the bottom bar + ?print=YEAR A4 sheet */
-  var isBtc     = params.has('btc') || (!!cfg.calendarUrl && icalUrl === cfg.calendarUrl);
+  /* only with ?btc: print links in the bottom bar + ?print=YEAR A4 sheet */
+  var isBtc     = params.has('btc');
   var canPrint  = isBtc && typeof CalendarPrint !== 'undefined';
   var printYear = canPrint ? parseInt(params.get('print'), 10) || 0 : 0;
 
