@@ -188,7 +188,7 @@ body.cw-print-mode {
 }
 .cw-ps-date {
   flex-shrink: 0;
-  width: 7.2em;
+  width: 8.3em;
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
