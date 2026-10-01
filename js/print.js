@@ -111,8 +111,8 @@ var CalendarPrint = (function () {
     if (w > avail) sheet.style.zoom = (avail / w).toFixed(3);
   }
 
-  /* QR module matrix (rows of '0'/'1') → inline SVG in BTC style: dots for
-     the data modules, black on the strip's BTC green (no white box).
+  /* QR module matrix (rows of '0'/'1') → inline SVG in BTC style: solid
+     square data modules, black on the strip's BTC green (no white box).
      Keep the eyes (almost) square — strongly rounded ones stop scanning. */
   function qrSvg(rows) {
     var n = rows.length, body = '', Q = 0.5; /* margin in modules; the strip around it is the quiet zone */
@@ -121,9 +121,12 @@ var CalendarPrint = (function () {
     }
     rows.forEach(function (row, y) {
       for (var x = 0; x < n; x++) {
-        if (row.charAt(x) === '1' && !inEye(x, y)) {
-          body += '<circle cx="' + (x + Q + 0.5) + '" cy="' + (y + Q + 0.5) + '" r="0.48"/>';
-        }
+        if (row.charAt(x) !== '1' || inEye(x, y)) continue;
+        var run = 1;
+        while (x + run < n && row.charAt(x + run) === '1' && !inEye(x + run, y)) run++;
+        /* slight overlap so neighbouring modules merge into solid areas */
+        body += '<rect x="' + (x + Q) + '" y="' + (y + Q) + '" width="' + (run + 0.03) + '" height="1.03"/>';
+        x += run - 1;
       }
     });
     [[0, 0], [n - 7, 0], [0, n - 7]].forEach(function (e) {
