@@ -8,7 +8,7 @@ var CalendarPrint = (function () {
   var WDAYS_SHORT = ['So','Mo','Di','Mi','Do','Fr','Sa'];
 
   /* font scale range for the fit-to-page loop */
-  var SCALE_MAX = 1.4, SCALE_MIN = 0.3, SCALE_STEP = 0.02;
+  var SCALE_MAX = 1.4, SCALE_MIN = 0.2, SCALE_STEP = 0.02;
 
   function el(tag, cls, text) {
     var e = document.createElement(tag);
@@ -79,24 +79,23 @@ var CalendarPrint = (function () {
     bar.appendChild(links);
   }
 
-  /* Shrink (or grow) the font scale until the multi-column list fits the
-     fixed-height page: overflowing content spills into extra columns, which
-     shows up as horizontal overflow. */
-  function fit(list) {
-    list.classList.remove('cw-ps-cols3');
+  /* Two fixed columns — January–June left, July–December right — so a month
+     is never split. Shrink the font scale until both fit the page height. */
+  function fit(list, blocks) {
+    if (!blocks.length) return;
+    var cols = [el('div', 'cw-ps-col'), el('div', 'cw-ps-col')];
+    list.appendChild(cols[0]);
+    list.appendChild(cols[1]);
+    blocks.forEach(function (b) { cols[+b.dataset.month < 6 ? 0 : 1].appendChild(b); });
+
     var scale = SCALE_MAX;
     function overflows() {
       list.style.setProperty('--cw-ps-scale', scale.toFixed(2));
-      return list.scrollWidth > list.clientWidth + 1 || list.scrollHeight > list.clientHeight + 1;
+      /* the last block's bottom margin doesn't need to fit */
+      var gap = parseFloat(getComputedStyle(blocks[0]).marginBottom) || 0;
+      return Math.max(cols[0].offsetHeight, cols[1].offsetHeight) - gap > list.clientHeight;
     }
-    while (overflows() && scale > SCALE_MIN) {
-      scale -= SCALE_STEP;
-      /* very full years: a third column reads better than tiny type */
-      if (scale < 0.62 && !list.classList.contains('cw-ps-cols3')) {
-        list.classList.add('cw-ps-cols3');
-        scale = 0.9;
-      }
-    }
+    while (overflows() && scale > SCALE_MIN) scale -= SCALE_STEP;
   }
 
   /* scale the fixed-size A4 preview down on narrow screens (screen only) */
@@ -155,6 +154,7 @@ var CalendarPrint = (function () {
       var m = ev.start.getMonth();
       if (m !== lastMonth) {
         block = el('div', 'cw-ps-block');
+        block.dataset.month = m;
         block.appendChild(el('div', 'cw-ps-month', MONTHS[m]));
         list.appendChild(block);
         lastMonth = m;
@@ -181,7 +181,7 @@ var CalendarPrint = (function () {
     sheet.appendChild(foot);
 
     root.appendChild(sheet);
-    fit(list);
+    fit(list, [].slice.call(list.querySelectorAll('.cw-ps-block')));
     fitScreen(sheet);
     window.onresize = function () { fitScreen(sheet); };
   }

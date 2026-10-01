@@ -157,20 +157,16 @@ body.cw-print-mode {
   --cw-ps-scale: 1;
   flex: 1;
   min-height: 0;
-  column-count: 2;
-  column-gap: 7mm;
-  column-fill: balance;
+  display: flex;
+  align-items: flex-start;
+  gap: 7mm;
   font-size: calc(10pt * var(--cw-ps-scale));
   line-height: 1.25;
 }
-.cw-ps-list.cw-ps-cols3 { column-count: 3; column-gap: 5mm; }
+/* left: January–June, right: July–December (see print.js fit()) */
+.cw-ps-col { flex: 1 1 0; min-width: 0; }
 
-/* a month never splits across columns */
-.cw-ps-block {
-  margin-bottom: 1em;
-  break-inside: avoid;
-  page-break-inside: avoid;
-}
+.cw-ps-block { margin-bottom: 1em; }
 .cw-ps-month {
   background: var(--ps-green);
   color: #fff;
