@@ -243,13 +243,13 @@ body.cw-print-mode {
   color: var(--ps-muted);
 }
 
-/* QR cards: website, Instagram, WhatsApp channel — green title bar like the
-   month headings, QR code on the light accent green below */
+/* QR strip: website, Instagram, WhatsApp channel — one continuous green
+   title bar like the month headings, QR codes on the light accent green below */
 .cw-ps-channels {
   flex-shrink: 0;
   display: flex;
-  gap: 4mm;
   margin-top: 4mm;
+  border-left: 1.4mm solid var(--ps-black);
 }
 .cw-ps-channels:empty { display: none; }
 .cw-ps-channel {
@@ -264,8 +264,7 @@ body.cw-print-mode {
 .cw-ps-channel-title {
   background: var(--ps-green);
   color: #fff;
-  padding: 1.3mm 3mm;
-  border-left: 1.4mm solid var(--ps-black);
+  padding: 1.3mm 3.5mm;
   font-size: 9pt;
   font-weight: 800;
   letter-spacing: 0.09em;
