@@ -176,9 +176,75 @@ var CalendarPrint = (function () {
     return strip;
   }
 
-  /* ── A4 sheet; with `flyer` two A5 copies of it side by side on A4 landscape ── */
-  function renderSheet(root, events, year, flyer) {
+  /* Render `sheet` into a square PNG (Instagram 1:1) and download it.
+     The sheet is cloned with all page styles into an SVG <foreignObject>,
+     which is then drawn onto a canvas. */
+  function downloadPng(sheet, size, filename) {
+    return new Promise(function (resolve, reject) {
+      var css = '';
+      [].forEach.call(document.styleSheets, function (ss) {
+        try {
+          [].forEach.call(ss.cssRules, function (r) { css += r.cssText + '\n'; });
+        } catch (e) { /* cross-origin sheet — not ours */ }
+      });
+      /* relative url()s don't resolve inside the SVG image */
+      var logo = sheet.querySelector('.cw-ps-logo');
+      if (logo) css += '.cw-ps-logo{background-image:' + getComputedStyle(logo).backgroundImage + ' !important}';
+
+      var zoom = sheet.style.zoom;
+      sheet.style.zoom = '';
+      var w = sheet.offsetWidth, h = sheet.offsetHeight;
+      sheet.style.zoom = zoom;
+
+      var wrap = document.createElement('div');
+      wrap.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+      wrap.className = 'cw-print-root';
+      wrap.style.padding = '0';
+      wrap.appendChild(el('style', null, css));
+      var clone = sheet.cloneNode(true);
+      clone.style.zoom = '';
+      clone.style.margin = '0';
+      clone.style.boxShadow = 'none';
+      wrap.appendChild(clone);
+
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size +
+        '" viewBox="0 0 ' + w + ' ' + h + '"><foreignObject width="' + w + '" height="' + h + '">' +
+        new XMLSerializer().serializeToString(wrap) + '</foreignObject></svg>';
+
+      var img = new Image();
+      img.onerror = function () { reject(new Error('Bild konnte nicht erzeugt werden.')); };
+      img.onload = function () {
+        try {
+          var canvas = document.createElement('canvas');
+          canvas.width = canvas.height = size;
+          var ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(0, 0, size, size);
+          ctx.drawImage(img, 0, 0, size, size);
+          canvas.toBlob(function (blob) {
+            if (!blob) { reject(new Error('Bild konnte nicht erzeugt werden.')); return; }
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(function () { URL.revokeObjectURL(a.href); }, 10000);
+            resolve();
+          }, 'image/png');
+        } catch (e) { reject(e); }
+      };
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    });
+  }
+
+  /* ── A4 sheet ──
+     mode 'flyer':  two A5 copies of it side by side on A4 landscape
+     mode 'square': 1:1 version for Instagram (see downloadPng)
+     Returns the sheet element. */
+  function renderSheet(root, events, year, mode) {
     var items = eventsOfYear(events, year);
+    var flyer = mode === 'flyer';
     document.title = 'BTC Jugend – Termine ' + year;
     document.body.classList.add('cw-print-mode');
     /* page size only here, so normal printing of the widget stays untouched */
@@ -201,13 +267,25 @@ var CalendarPrint = (function () {
     var flyerBtn = el('button', 'cw-ps-print', '🖨 Flyer drucken (2× A5)');
     flyerBtn.title = 'Zweimal DIN A5 nebeneinander auf A4 quer';
     flyerBtn.addEventListener('click', function () {
-      renderSheet(root, events, year, true);
+      renderSheet(root, events, year, 'flyer');
       window.addEventListener('afterprint', function () {
-        renderSheet(root, events, year, false);
+        renderSheet(root, events, year);
       }, { once: true });
       setTimeout(function () { window.print(); }, 50);
     });
     bar.appendChild(flyerBtn);
+    /* Instagram: no preview either — render square, download PNG, switch back */
+    var instaBtn = el('button', 'cw-ps-print', '📷 Instagram-Bild (1:1)');
+    instaBtn.title = 'Quadratisches Bild (1080 × 1080) herunterladen';
+    instaBtn.addEventListener('click', function () {
+      var square = renderSheet(root, events, year, 'square');
+      var back = function (err) {
+        var again = renderSheet(root, events, year);
+        if (err) again.parentNode.insertBefore(el('div', 'cw-ps-error', err.message), again);
+      };
+      downloadPng(square, 1080, 'btc-jugend-termine-' + year + '.png').then(function () { back(); }, back);
+    });
+    bar.appendChild(instaBtn);
     availableYears(events).forEach(function (y) {
       if (y === year) return;
       var a = el('a', 'cw-ps-year', 'Termine ' + y + ' →');
@@ -216,7 +294,7 @@ var CalendarPrint = (function () {
     });
     root.appendChild(bar);
 
-    var sheet = el('div', 'cw-ps-sheet');
+    var sheet = el('div', 'cw-ps-sheet' + (mode === 'square' ? ' cw-ps-square' : ''));
     sheet.lang = 'de';
 
     /* header: logo + "Jugend" + year */
@@ -286,6 +364,7 @@ var CalendarPrint = (function () {
     if (flyer) outer.appendChild(el('div', 'cw-ps-slot')).appendChild(sheet.cloneNode(true));
     fitScreen(outer);
     window.onresize = function () { fitScreen(outer); };
+    return sheet;
   }
 
   return { addButtons: addButtons, renderSheet: renderSheet };

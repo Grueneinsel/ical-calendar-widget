@@ -317,6 +317,31 @@ body.cw-print-mode {
 .cw-ps-disclaimer { font-style: italic; }
 .cw-ps-stand { white-space: nowrap; font-weight: 700; }
 
+/* ── Instagram 1:1: square sheet, exported as PNG by print.js ──
+   No QR codes (nobody scans their own screen) — the strip keeps the names. */
+.cw-ps-square {
+  height: 210mm;
+  padding: 9mm 11mm 7mm;
+}
+.cw-ps-square .cw-ps-logo { width: 25mm; height: 25mm; }
+.cw-ps-square .cw-ps-jugend { font-size: 34pt; }
+.cw-ps-square .cw-ps-yearnum { font-size: 40pt; }
+.cw-ps-square .cw-ps-rule { margin: 4mm 0; }
+.cw-ps-square .cw-ps-qr { display: none; }
+.cw-ps-square .cw-ps-channel-body { padding: 2mm 3.5mm; }
+.cw-ps-square .cw-ps-channel-hint { font-size: 9pt; }
+.cw-ps-square .cw-ps-channel-title { font-size: 9.5pt; }
+
+.cw-ps-error {
+  max-width: 210mm;
+  margin: 0 auto 10px;
+  padding: 8px 12px;
+  background: #fff;
+  border-left: 4px solid #dc2626;
+  color: #dc2626;
+  font-size: 14px;
+}
+
 /* ── flyer: two A5 copies side by side on A4 landscape ──
    Each slot holds the full A4 sheet scaled by 1/√2, which is exactly A5. */
 .cw-ps-2up {
