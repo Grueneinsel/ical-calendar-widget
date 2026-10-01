@@ -27,8 +27,7 @@
   box-shadow: 0 3px 8px rgba(0,0,0,0.18);
 }
 
-/* ── A4 sheet ── */
-@page { size: A4 portrait; margin: 0; }
+/* ── A4 sheet ── (the @page rule is injected by print.js, only in print mode) */
 
 body.cw-print-mode {
   background: #d9dcda;

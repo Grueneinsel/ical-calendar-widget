@@ -116,6 +116,12 @@ var CalendarPrint = (function () {
     var items = eventsOfYear(events, year);
     document.title = 'BTC Jugend – Termine ' + year;
     document.body.classList.add('cw-print-mode');
+    /* page size only here, so normal printing of the widget stays untouched */
+    if (!document.getElementById('cw-ps-page')) {
+      var page = el('style', null, '@page { size: A4 portrait; margin: 0; }');
+      page.id = 'cw-ps-page';
+      document.head.appendChild(page);
+    }
     root.innerHTML = '';
     root.className = 'cw-print-root';
 
