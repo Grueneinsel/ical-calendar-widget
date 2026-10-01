@@ -111,6 +111,41 @@ var CalendarPrint = (function () {
     if (w > avail) sheet.style.zoom = (avail / w).toFixed(3);
   }
 
+  /* QR module matrix (rows of '0'/'1') → inline SVG with a 1-module quiet zone */
+  function qrSvg(rows) {
+    var n = rows.length, d = '';
+    rows.forEach(function (row, y) {
+      for (var x = 0; x < n; x++) {
+        if (row.charAt(x) !== '1') continue;
+        var run = 1;
+        while (x + run < n && row.charAt(x + run) === '1') run++;
+        d += 'M' + (x + 1) + ' ' + (y + 1) + 'h' + run + 'v1h-' + run + 'z';
+        x += run - 1;
+      }
+    });
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + (n + 2) + ' ' + (n + 2) +
+      '" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="#fff"/>' +
+      '<path fill="#0e0e0c" d="' + d + '"/></svg>';
+  }
+
+  /* strip with the QR codes: website, Instagram, WhatsApp channel */
+  function channels() {
+    var strip = el('div', 'cw-ps-channels');
+    (typeof CW_PRINT_QR !== 'undefined' ? CW_PRINT_QR : []).forEach(function (c) {
+      var item = el('a', 'cw-ps-channel');
+      item.href = c.url;
+      var code = el('div', 'cw-ps-qr');
+      code.innerHTML = qrSvg(c.rows);
+      item.appendChild(code);
+      var text = el('div', 'cw-ps-channel-text');
+      text.appendChild(el('div', 'cw-ps-channel-title', c.title));
+      text.appendChild(el('div', 'cw-ps-channel-hint', c.hint));
+      item.appendChild(text);
+      strip.appendChild(item);
+    });
+    return strip;
+  }
+
   /* ── A4 sheet ── */
   function renderSheet(root, events, year) {
     var items = eventsOfYear(events, year);
@@ -187,6 +222,8 @@ var CalendarPrint = (function () {
       block.appendChild(row);
     });
     sheet.appendChild(list);
+
+    sheet.appendChild(channels());
 
     /* footer */
     var foot = el('div', 'cw-ps-foot');

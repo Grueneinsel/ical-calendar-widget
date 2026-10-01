@@ -243,13 +243,54 @@ body.cw-print-mode {
   color: var(--ps-muted);
 }
 
+/* QR strip: website, Instagram, WhatsApp channel */
+.cw-ps-channels {
+  flex-shrink: 0;
+  display: flex;
+  gap: 4mm;
+  margin-top: 4mm;
+  padding: 3mm;
+  background: var(--ps-green-soft);
+  border-left: 1.6mm solid var(--ps-green);
+}
+.cw-ps-channels:empty { display: none; }
+.cw-ps-channel {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 3mm;
+  color: inherit;
+  text-decoration: none;
+}
+.cw-ps-qr {
+  flex-shrink: 0;
+  width: 22mm;
+  height: 22mm;
+}
+.cw-ps-qr svg { display: block; width: 100%; height: 100%; }
+.cw-ps-channel-text { min-width: 0; }
+.cw-ps-channel-title {
+  font-size: 10.5pt;
+  font-weight: 900;
+  line-height: 1.15;
+}
+.cw-ps-channel-hint {
+  margin-top: 1mm;
+  font-size: 7pt;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ps-green-dark);
+  overflow-wrap: anywhere;
+}
+
 /* footer */
 .cw-ps-foot {
   flex-shrink: 0;
   display: flex;
   justify-content: space-between;
   gap: 8mm;
-  margin-top: 4mm;
+  margin-top: 3mm;
   padding-top: 2.5mm;
   border-top: 0.5mm solid var(--ps-black);
   font-size: 8pt;
