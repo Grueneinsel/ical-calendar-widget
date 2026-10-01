@@ -165,7 +165,12 @@ body.cw-print-mode {
 }
 .cw-ps-list.cw-ps-cols3 { column-count: 3; column-gap: 5mm; }
 
-.cw-ps-block { margin-bottom: 1em; }
+/* a month never splits across columns */
+.cw-ps-block {
+  margin-bottom: 1em;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
 .cw-ps-month {
   background: var(--ps-green);
   color: #fff;
