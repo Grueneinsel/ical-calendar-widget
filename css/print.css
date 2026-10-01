@@ -317,6 +317,31 @@ body.cw-print-mode {
 .cw-ps-disclaimer { font-style: italic; }
 .cw-ps-stand { white-space: nowrap; font-weight: 700; }
 
+/* ── flyer: two A5 copies side by side on A4 landscape ──
+   Each slot holds the full A4 sheet scaled by 1/√2, which is exactly A5. */
+.cw-ps-2up {
+  display: flex;
+  width: 297mm;
+  height: 210mm;
+  margin: 0 auto;
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+}
+.cw-ps-slot {
+  width: 148.5mm;
+  height: 210mm;
+  overflow: hidden;
+}
+/* cutting line between the two copies */
+.cw-ps-slot + .cw-ps-slot { box-shadow: inset 1px 0 0 #c9cfcb; }
+.cw-ps-2up .cw-ps-sheet {
+  margin: 0;
+  box-shadow: none;
+  background: none;
+  transform: scale(0.70711);
+  transform-origin: 0 0;
+}
+
 @media print {
   html, body.cw-print-mode { background: #fff !important; margin: 0 !important; }
   .cw-print-root { padding: 0; }
@@ -330,4 +355,15 @@ body.cw-print-mode {
     break-inside: avoid;
     page-break-inside: avoid;
   }
+  .cw-ps-2up {
+    zoom: 1 !important;
+    height: 209mm;
+    margin: 0;
+    box-shadow: none !important;
+    overflow: hidden;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .cw-ps-2up .cw-ps-slot  { height: 209mm; }
+  .cw-ps-2up .cw-ps-sheet { height: 295.5mm; }
 }

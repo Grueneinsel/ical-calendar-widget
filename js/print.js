@@ -53,11 +53,17 @@ var CalendarPrint = (function () {
     return eventsOfYear(events, y + 1).length ? [y, y + 1] : [y];
   }
 
-  function printUrl(year) {
+  /* layout 'a5' = flyer version: two A5 copies side by side on A4 landscape */
+  function printUrl(year, layout) {
     var p = new URLSearchParams(location.search);
     p.delete('dev');
     p.set('print', year);
+    if (layout) p.set('layout', layout); else p.delete('layout');
     return location.pathname + '?' + p.toString();
+  }
+
+  function isFlyerLayout() {
+    return new URLSearchParams(location.search).get('layout') === 'a5';
   }
 
   /* ── print links in the widget's bottom bar ── */
@@ -68,13 +74,19 @@ var CalendarPrint = (function () {
     if (old) old.remove();
 
     var links = el('span', 'cw-print-links');
-    availableYears(events).forEach(function (year) {
-      var a = el('a', 'cw-print-btn', '🖨 ' + year + ' Drucken');
-      a.href   = printUrl(year);
+    function add(label, href, title) {
+      var a = el('a', 'cw-print-btn', label);
+      a.href   = href;
       a.target = '_blank';
       a.rel    = 'noopener';
-      a.title  = 'Jahresübersicht ' + year + ' als DIN-A4-Seite drucken oder als PDF speichern';
+      a.title  = title;
       links.appendChild(a);
+    }
+    availableYears(events).forEach(function (year) {
+      add('🖨 ' + year + ' Drucken', printUrl(year),
+        'Jahresübersicht ' + year + ' als DIN-A4-Seite drucken oder als PDF speichern');
+      add('🖨 ' + year + ' Flyer 2× A5', printUrl(year, 'a5'),
+        'Jahresübersicht ' + year + ' als Flyer drucken: zweimal DIN A5 nebeneinander auf A4 quer');
     });
     bar.appendChild(links);
   }
@@ -121,7 +133,7 @@ var CalendarPrint = (function () {
     }
   }
 
-  /* scale the fixed-size A4 preview down on narrow screens (screen only) */
+  /* scale the fixed-size preview down on narrow screens (screen only) */
   function fitScreen(sheet) {
     sheet.style.zoom = '';
     var avail = document.documentElement.clientWidth - 16;
@@ -176,17 +188,22 @@ var CalendarPrint = (function () {
     return strip;
   }
 
-  /* ── A4 sheet ── */
+  var autoPrinted = false;
+
+  /* ── A4 sheet (or, as flyer, two A5 copies of it on A4 landscape) ── */
   function renderSheet(root, events, year) {
     var items = eventsOfYear(events, year);
+    var flyer = isFlyerLayout();
     document.title = 'BTC Jugend – Termine ' + year;
     document.body.classList.add('cw-print-mode');
     /* page size only here, so normal printing of the widget stays untouched */
-    if (!document.getElementById('cw-ps-page')) {
-      var page = el('style', null, '@page { size: A4 portrait; margin: 0; }');
+    var page = document.getElementById('cw-ps-page');
+    if (!page) {
+      page = el('style');
       page.id = 'cw-ps-page';
       document.head.appendChild(page);
     }
+    page.textContent = '@page { size: A4 ' + (flyer ? 'landscape' : 'portrait') + '; margin: 0; }';
     root.innerHTML = '';
     root.className = 'cw-print-root';
 
@@ -198,9 +215,12 @@ var CalendarPrint = (function () {
     availableYears(events).forEach(function (y) {
       if (y === year) return;
       var a = el('a', 'cw-ps-year', 'Termine ' + y + ' →');
-      a.href = printUrl(y);
+      a.href = printUrl(y, flyer ? 'a5' : null);
       bar.appendChild(a);
     });
+    var other = el('a', 'cw-ps-year', flyer ? 'Als DIN A4' : 'Als Flyer (2× A5)');
+    other.href = printUrl(year, flyer ? null : 'a5');
+    bar.appendChild(other);
     root.appendChild(bar);
 
     var sheet = el('div', 'cw-ps-sheet');
@@ -262,10 +282,23 @@ var CalendarPrint = (function () {
       new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })));
     sheet.appendChild(foot);
 
-    root.appendChild(sheet);
+    /* flyer: the A4 sheet scaled to A5 (CSS), twice next to each other */
+    var outer = sheet;
+    if (flyer) {
+      outer = el('div', 'cw-ps-2up');
+      outer.appendChild(el('div', 'cw-ps-slot')).appendChild(sheet);
+    }
+    root.appendChild(outer);
     fit(list, [].slice.call(list.querySelectorAll('.cw-ps-block')));
-    fitScreen(sheet);
-    window.onresize = function () { fitScreen(sheet); };
+    if (flyer) outer.appendChild(el('div', 'cw-ps-slot')).appendChild(sheet.cloneNode(true));
+    fitScreen(outer);
+    window.onresize = function () { fitScreen(outer); };
+
+    /* the flyer needs no preview: open the print dialog right away (once) */
+    if (flyer && !autoPrinted) {
+      autoPrinted = true;
+      setTimeout(function () { window.print(); }, 300);
+    }
   }
 
   return { addButtons: addButtons, renderSheet: renderSheet };
