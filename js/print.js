@@ -112,10 +112,10 @@ var CalendarPrint = (function () {
   }
 
   /* QR module matrix (rows of '0'/'1') → inline SVG in BTC style: dots for
-     the data modules, finder eyes with a green centre, white quiet zone.
+     the data modules, finder eyes with a green centre, on the strip's light green (no white box).
      Keep the eyes (almost) square — strongly rounded ones stop scanning. */
   function qrSvg(rows) {
-    var n = rows.length, body = '', Q = 2; /* quiet zone in modules */
+    var n = rows.length, body = '', Q = 0.5; /* margin in modules; the strip around it is the quiet zone */
     function inEye(x, y) {
       return (x < 7 && y < 7) || (x >= n - 7 && y < 7) || (x < 7 && y >= n - 7);
     }
@@ -129,11 +129,11 @@ var CalendarPrint = (function () {
     [[0, 0], [n - 7, 0], [0, n - 7]].forEach(function (e) {
       var x = e[0] + Q, y = e[1] + Q;
       body += '<rect x="' + x + '" y="' + y + '" width="7" height="7" rx="0.5"/>' +
-        '<rect x="' + (x + 1) + '" y="' + (y + 1) + '" width="5" height="5" rx="0.2" fill="#fff"/>' +
+        '<rect x="' + (x + 1) + '" y="' + (y + 1) + '" width="5" height="5" rx="0.2" fill="#e9f6ef"/>' +
         '<rect x="' + (x + 2) + '" y="' + (y + 2) + '" width="3" height="3" rx="0.6" fill="#1f8552"/>';
     });
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + (n + 2 * Q) + ' ' + (n + 2 * Q) +
-      '"><rect width="100%" height="100%" rx="1.6" fill="#fff"/>' +
+      '">' +
       '<g fill="#0e0e0c">' + body + '</g></svg>';
   }
 

@@ -259,19 +259,19 @@ body.cw-print-mode {
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: 3mm;
+  gap: 2.5mm;
   color: inherit;
   text-decoration: none;
 }
 .cw-ps-qr {
   flex-shrink: 0;
-  width: 23mm;
-  height: 23mm;
+  width: 26mm;
+  height: 26mm;
 }
 .cw-ps-qr svg { display: block; width: 100%; height: 100%; }
 .cw-ps-channel-text { min-width: 0; }
 .cw-ps-channel-title {
-  font-size: 10pt;
+  font-size: 9.5pt;
   font-weight: 900;
   line-height: 1.15;
   white-space: nowrap;
