@@ -20,7 +20,7 @@ try:
 except ImportError:
     def _minify_js(s: str) -> str: return s
 
-ROOT    = Path(__file__).parent.resolve()
+ROOT    = Path(__file__).resolve().parent.parent
 OUT_DIR = ROOT / "dist"
 
 ENTRIES = ["widget.html", "index.html"]

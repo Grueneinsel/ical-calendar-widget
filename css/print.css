@@ -117,7 +117,7 @@ body.cw-print-mode {
   flex-shrink: 0;
   width: 30mm;
   height: 30mm;
-  background: url('../BTC Logo_fix.svg') center / contain no-repeat;
+  background: url('../assets/btc-logo.svg') center / contain no-repeat;
 }
 .cw-ps-name { flex: 1; min-width: 0; }
 .cw-ps-jugend {

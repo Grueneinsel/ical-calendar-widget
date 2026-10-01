@@ -30,6 +30,7 @@ jobs:
           CALENDAR_URL: ${{ secrets.CALENDAR_URL }}
         run: |
           CLEAN_URL=$(echo "$CALENDAR_URL" | tr -d '\n\r\t ')
+          mkdir -p dist
           if [ -n "$CLEAN_URL" ]; then
             curl -fsSL "$CLEAN_URL" -o dist/calendar.ics
             # Inject URL into vars.js so ?btc can trigger live refresh after backup
@@ -39,7 +40,7 @@ jobs:
           fi
 
       - name: Build
-        run: python3 bundler.py
+        run: python3 tools/bundler.py
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

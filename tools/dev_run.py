@@ -10,7 +10,7 @@ import webbrowser
 from pathlib import Path
 from urllib.parse import quote
 
-ROOT = Path(__file__).parent.resolve()
+ROOT = Path(__file__).resolve().parent.parent
 PORT = 8080
 
 def read_vars():
@@ -50,14 +50,15 @@ def main():
             print("WARN: calendarUrl in vars.js leer — calendar.ics wird nicht geladen")
 
         bundler = subprocess.Popen(
-            [sys.executable, str(ROOT / "bundler.py"), "--watch"],
+            [sys.executable, str(ROOT / "tools" / "bundler.py"), "--watch"],
             cwd=str(ROOT)
         )
         time.sleep(2)
 
-        params = "&dev"
+        # &btc enables the BTC-only print feature (buttons + A4 sheet)
+        params = "?btc&dev"
         if ics_url:
-            params = "?url=" + quote(ics_url, safe='') + "&dev"
+            params = "?url=" + quote(ics_url, safe='') + "&btc&dev"
         if email:
             params += "&email=" + quote(email, safe='')
 

@@ -11,10 +11,12 @@ echo
 # dev_run.py startet Bundler (watch) + HTTP-Server zusammen.
 # Beide stoppen automatisch bei Strg+C.
 
+cd "$(dirname "$0")"
+
 if command -v python >/dev/null 2>&1; then
-  python dev_run.py || python3 dev_run.py
+  python tools/dev_run.py || python3 tools/dev_run.py
 else
-  python3 dev_run.py
+  python3 tools/dev_run.py
 fi
 
 read -r -p "Beendet. Enter drücken zum Schließen..." _
