@@ -250,8 +250,8 @@ body.cw-print-mode {
   gap: 4mm;
   margin-top: 4mm;
   padding: 3mm;
-  background: var(--ps-green-soft);
-  border-left: 1.6mm solid var(--ps-green);
+  background: var(--ps-green);
+  border-left: 1.6mm solid var(--ps-black);
 }
 .cw-ps-channels:empty { display: none; }
 .cw-ps-channel {
@@ -281,7 +281,7 @@ body.cw-print-mode {
   font-size: 7pt;
   font-weight: 600;
   line-height: 1.25;
-  color: var(--ps-green-dark);
+  color: #fff;
   white-space: pre-line;
   overflow-wrap: anywhere;
 }
