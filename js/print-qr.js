@@ -8,7 +8,7 @@
 var CW_PRINT_QR = [
   {
     title: 'Aktuelle Infos',
-    hint:  'btc-herne.de/jugend',
+    hint:  'btc-herne.de\n/jugend',
     url:   'https://www.btc-herne.de/jugend/',
     qr:    'https://www.btc-herne.de/jugend/',
     rows: [
