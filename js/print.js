@@ -194,7 +194,7 @@ var CalendarPrint = (function () {
 
     var body = '', x, y, i;
     var reach = Math.sqrt(w * w + h * h);
-    /* three families in turn: 2027 dots, 2028 waves, 2029 rings, 2030 dots … */
+    /* three families in turn: 2027 dots, 2028 stripes, 2029 rings, 2030 dots … */
     switch ((((year - 2027) % 3) + 3) % 3) {
       case 0: /* halftone dots */
         var d = 7 + 3 * rnd(), fx = 0.02 + 0.05 * rnd(), fy = 0.02 + 0.05 * rnd(), ph = 6.28 * rnd();
@@ -205,15 +205,16 @@ var CalendarPrint = (function () {
           }
         }
         break;
-      case 1: /* waves */
-        var gap = 9 + 5 * rnd(), amp = 4 + 7 * rnd(), len = 14 + 16 * rnd();
-        for (y = -amp; y < h + amp; y += gap) {
-          var phase = 6.28 * rnd(), path = '';
-          for (x = -2; x <= w + 2; x += 2) {
-            path += (path ? 'L' : 'M') + f(x) + ' ' + f(y + amp * Math.sin(x / len + phase));
-          }
-          body += '<path d="' + path + '" fill="none" stroke-width="' + f(1 + 2.2 * rnd()) + '"/>';
+      case 1: /* diagonal stripes */
+        var angle = (rnd() < 0.5 ? -1 : 1) * (25 + 40 * rnd());
+        body += '<g transform="rotate(' + f(angle) + ' ' + f(w / 2) + ' ' + f(h / 2) + ')">';
+        for (x = w / 2 - reach; x < w / 2 + reach;) {
+          var sw = 1.5 + 7 * rnd();
+          body += '<rect x="' + f(x) + '" y="' + f(h / 2 - reach) + '" width="' + f(sw) +
+            '" height="' + f(2 * reach) + '"/>';
+          x += sw + 4 + 9 * rnd();
         }
+        body += '</g>';
         break;
       default: /* concentric rings */
         var cx = w * (0.55 + 0.5 * rnd()), cy = h * (0.02 + 0.2 * rnd()), step = 7 + 6 * rnd();
