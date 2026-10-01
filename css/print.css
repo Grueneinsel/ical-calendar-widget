@@ -227,6 +227,15 @@ body.cw-print-mode {
   -webkit-hyphens: auto;
   hyphens: auto;
 }
+/* during print.js fit(): unbreakable words, and the right padding as margin,
+   so a word that is too long shows up as horizontal overflow */
+.cw-ps-fitting .cw-ps-title {
+  overflow-wrap: normal;
+  -webkit-hyphens: none;
+  hyphens: none;
+  padding-right: 0;
+  margin-right: 0.6em;
+}
 .cw-ps-cancel .cw-ps-title { color: var(--ps-muted); text-decoration: line-through; }
 .cw-ps-cancel .cw-ps-date  { background: #f1f1f1; }
 .cw-ps-tag {

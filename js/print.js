@@ -7,8 +7,8 @@ var CalendarPrint = (function () {
                 'August','September','Oktober','November','Dezember'];
   var WDAYS_SHORT = ['So','Mo','Di','Mi','Do','Fr','Sa'];
 
-  /* font scale range for the fit-to-page loop */
-  var SCALE_MAX = 1.4, SCALE_MIN = 0.2, SCALE_STEP = 0.02;
+  /* font scale range for fit(): 1 = 10pt */
+  var SCALE_MAX = 2.4, SCALE_MIN = 0.2;
 
   function el(tag, cls, text) {
     var e = document.createElement(tag);
@@ -80,7 +80,7 @@ var CalendarPrint = (function () {
   }
 
   /* Two fixed columns — January–June left, July–December right — so a month
-     is never split. Shrink the font scale until both fit the page height. */
+     is never split. The font scale is fitted to the page height. */
   function fit(list, blocks) {
     if (!blocks.length) return;
     var cols = [el('div', 'cw-ps-col'), el('div', 'cw-ps-col')];
@@ -93,14 +93,32 @@ var CalendarPrint = (function () {
       if (col.children.length === 1) col.appendChild(el('div', 'cw-ps-none', 'Noch keine Termine.'));
     });
 
-    var scale = SCALE_MAX;
-    function overflows() {
-      list.style.setProperty('--cw-ps-scale', scale.toFixed(2));
+    var titles = [].slice.call(list.querySelectorAll('.cw-ps-title'));
+    function fits(scale) {
+      list.style.setProperty('--cw-ps-scale', scale.toFixed(3));
       /* the last block's bottom margin doesn't need to fit */
       var gap = parseFloat(getComputedStyle(blocks[0]).marginBottom) || 0;
-      return Math.max(cols[0].offsetHeight, cols[1].offsetHeight) - gap > list.clientHeight;
+      if (Math.max(cols[0].offsetHeight, cols[1].offsetHeight) - gap > list.clientHeight) return false;
+      /* too big as well if a single word no longer fits its line */
+      return !titles.some(function (t) { return t.scrollWidth > t.clientWidth; });
     }
-    while (overflows() && scale > SCALE_MIN) scale -= SCALE_STEP;
+    /* while measuring, words must not be broken apart (see print.css) */
+    list.classList.add('cw-ps-fitting');
+    search();
+    list.classList.remove('cw-ps-fitting');
+
+    /* binary search for the largest scale at which the fuller half-year
+       still fits — the text always fills the page as far as possible */
+    function search() {
+      var lo = SCALE_MIN, hi = SCALE_MAX;
+      if (fits(hi)) lo = hi;
+      while (hi - lo > 0.005) {
+        var mid = (lo + hi) / 2;
+        if (fits(mid)) lo = mid; else hi = mid;
+      }
+      /* small safety margin against sub-pixel rounding (screen vs. print) */
+      fits(lo * 0.98);
+    }
   }
 
   /* scale the fixed-size A4 preview down on narrow screens (screen only) */
