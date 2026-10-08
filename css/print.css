@@ -163,7 +163,6 @@ body.cw-print-mode {
   letter-spacing: -1pt;
   color: var(--ps-green);
 }
-.cw-ps-yearnum-end { color: var(--ps-black); }
 
 /* black rule with green lead-in */
 .cw-ps-rule {
