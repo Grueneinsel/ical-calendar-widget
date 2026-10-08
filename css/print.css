@@ -77,10 +77,16 @@ body.cw-print-mode {
 }
 .cw-ps-print:hover { background: var(--ps-green-dark); transform: scale(1.03); }
 .cw-ps-year {
+  padding: 10px 22px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   color: var(--ps-black);
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 0.15s;
 }
+.cw-ps-year:hover { transform: scale(1.03); }
 /* back / imprint in the bottom corners of the window (screen only) */
 .cw-ps-corner {
   position: fixed;
