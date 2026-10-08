@@ -408,7 +408,10 @@ var CalendarPrint = (function () {
     name.appendChild(el('div', 'cw-ps-jugend', 'Jugend'));
     name.appendChild(el('div', 'cw-ps-sub', 'Terminkalender'));
     head.appendChild(name);
-    head.appendChild(el('div', 'cw-ps-yearnum', String(year)));
+    /* century in green, the last two digits in black */
+    var yearNum = el('div', 'cw-ps-yearnum', String(year).slice(0, -2));
+    yearNum.appendChild(el('span', 'cw-ps-yearnum-end', String(year).slice(-2)));
+    head.appendChild(yearNum);
     sheet.appendChild(head);
     sheet.appendChild(el('div', 'cw-ps-rule'));
 
