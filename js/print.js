@@ -60,6 +60,14 @@ var CalendarPrint = (function () {
     return location.pathname + '?' + p.toString();
   }
 
+  /* the widget itself: same URL without ?print */
+  function widgetUrl() {
+    var p = new URLSearchParams(location.search);
+    p.delete('print');
+    var q = p.toString();
+    return location.pathname + (q ? '?' + q : '');
+  }
+
   /* ── print links in the widget's bottom bar ── */
   function addButtons(container, events) {
     var bar = container.querySelector('.cw-disclaimer');
@@ -321,6 +329,15 @@ var CalendarPrint = (function () {
 
     /* toolbar (screen only) */
     var bar = el('div', 'cw-ps-toolbar');
+    var backLink = el('a', 'cw-ps-year', '← Zurück');
+    backLink.href  = widgetUrl();
+    backLink.title = 'Zurück zum Kalender';
+    /* like the browser's back button; opened in a new tab there is no
+       history, so the link then simply leads to the widget */
+    backLink.addEventListener('click', function (e) {
+      if (history.length > 1) { e.preventDefault(); history.back(); }
+    });
+    bar.appendChild(backLink);
     var printBtn = el('button', 'cw-ps-print', '🖨 Drucken / als PDF speichern');
     printBtn.addEventListener('click', function () { window.print(); });
     bar.appendChild(printBtn);
@@ -353,6 +370,11 @@ var CalendarPrint = (function () {
       a.href = printUrl(y);
       bar.appendChild(a);
     });
+    var imprint = el('a', 'cw-ps-year', 'Impressum');
+    imprint.href   = 'https://multifredding.de/';
+    imprint.target = '_blank';
+    imprint.rel    = 'noopener';
+    bar.appendChild(imprint);
     root.appendChild(bar);
 
     var sheet = el('div', 'cw-ps-sheet' + (mode === 'square' ? ' cw-ps-square' : ''));
