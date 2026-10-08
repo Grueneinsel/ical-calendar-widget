@@ -44,7 +44,7 @@ body.cw-print-mode {
 
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   color: var(--ps-black);
-  padding: 8px 8px 24px;
+  padding: 8px 8px 48px;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -81,6 +81,22 @@ body.cw-print-mode {
   font-size: 14px;
   font-weight: 700;
 }
+/* back / imprint in the bottom corners of the window (screen only) */
+.cw-ps-corner {
+  position: fixed;
+  bottom: 8px;
+  z-index: 5;
+  padding: 6px 12px;
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+  color: var(--ps-black);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.cw-ps-corner:hover { text-decoration: underline; }
+.cw-ps-corner-left  { left: 8px; }
+.cw-ps-corner-right { right: 8px; }
 
 .cw-ps-sheet {
   position: relative;
@@ -372,7 +388,7 @@ body.cw-print-mode {
 @media print {
   html, body.cw-print-mode { background: #fff !important; margin: 0 !important; }
   .cw-print-root { padding: 0; }
-  .cw-ps-toolbar { display: none !important; }
+  .cw-ps-toolbar, .cw-ps-corner { display: none !important; }
   .cw-ps-sheet {
     zoom: 1 !important;
     /* a hair under A4 so rounding never spills onto a second page */

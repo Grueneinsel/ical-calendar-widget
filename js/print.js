@@ -10,6 +10,9 @@ var CalendarPrint = (function () {
   /* font scale range for fit(): 1 = 10pt */
   var SCALE_MAX = 2.4, SCALE_MIN = 0.2;
 
+  var HOME_URL    = 'https://www.btc-herne.de/jugend/';
+  var IMPRINT_URL = 'https://multifredding.de/';
+
   function el(tag, cls, text) {
     var e = document.createElement(tag);
     if (cls) e.className = cls;
@@ -60,12 +63,29 @@ var CalendarPrint = (function () {
     return location.pathname + '?' + p.toString();
   }
 
-  /* the widget itself: same URL without ?print */
-  function widgetUrl() {
-    var p = new URLSearchParams(location.search);
-    p.delete('print');
-    var q = p.toString();
-    return location.pathname + (q ? '?' + q : '');
+  /* Corner links below the sheet (screen only): back bottom left, imprint
+     bottom right. Back works like the browser's back button; the sheet
+     usually opens in a new tab without any history (and the widget itself
+     sits in an iframe of the club's site), so then it leads to HOME_URL. */
+  function cornerLinks(root) {
+    var back = el('a', 'cw-ps-corner cw-ps-corner-left', '← Zurück');
+    back.href = HOME_URL;
+    back.addEventListener('click', function (e) {
+      var nav = window.navigation;
+      if (nav && typeof nav.canGoBack === 'boolean' ? !nav.canGoBack : history.length < 2) return;
+      e.preventDefault();
+      /* still here shortly after → there was nothing to go back to */
+      var t = setTimeout(function () { location.href = HOME_URL; }, 400);
+      window.addEventListener('pagehide', function () { clearTimeout(t); }, { once: true });
+      history.back();
+    });
+    root.appendChild(back);
+
+    var imprint = el('a', 'cw-ps-corner cw-ps-corner-right', 'Impressum');
+    imprint.href   = IMPRINT_URL;
+    imprint.target = '_blank';
+    imprint.rel    = 'noopener';
+    root.appendChild(imprint);
   }
 
   /* ── print links in the widget's bottom bar ── */
@@ -315,6 +335,16 @@ var CalendarPrint = (function () {
     var items = eventsOfYear(events, year);
     var flyer = mode === 'flyer';
     document.title = 'BTC Jugend – Termine ' + year;
+    /* printer emoji as favicon */
+    var icon = document.getElementById('cw-ps-icon');
+    if (!icon) {
+      icon = el('link');
+      icon.id   = 'cw-ps-icon';
+      icon.rel  = 'icon';
+      icon.href = 'data:image/svg+xml,' + encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🖨️</text></svg>');
+      document.head.appendChild(icon);
+    }
     document.body.classList.add('cw-print-mode');
     /* page size only here, so normal printing of the widget stays untouched */
     var page = document.getElementById('cw-ps-page');
@@ -329,15 +359,6 @@ var CalendarPrint = (function () {
 
     /* toolbar (screen only) */
     var bar = el('div', 'cw-ps-toolbar');
-    var backLink = el('a', 'cw-ps-year', '← Zurück');
-    backLink.href  = widgetUrl();
-    backLink.title = 'Zurück zum Kalender';
-    /* like the browser's back button; opened in a new tab there is no
-       history, so the link then simply leads to the widget */
-    backLink.addEventListener('click', function (e) {
-      if (history.length > 1) { e.preventDefault(); history.back(); }
-    });
-    bar.appendChild(backLink);
     var printBtn = el('button', 'cw-ps-print', '🖨 Drucken / als PDF speichern');
     printBtn.addEventListener('click', function () { window.print(); });
     bar.appendChild(printBtn);
@@ -370,11 +391,6 @@ var CalendarPrint = (function () {
       a.href = printUrl(y);
       bar.appendChild(a);
     });
-    var imprint = el('a', 'cw-ps-year', 'Impressum');
-    imprint.href   = 'https://multifredding.de/';
-    imprint.target = '_blank';
-    imprint.rel    = 'noopener';
-    bar.appendChild(imprint);
     root.appendChild(bar);
 
     var sheet = el('div', 'cw-ps-sheet' + (mode === 'square' ? ' cw-ps-square' : ''));
@@ -446,6 +462,7 @@ var CalendarPrint = (function () {
       outer.appendChild(el('div', 'cw-ps-slot')).appendChild(sheet);
     }
     root.appendChild(outer);
+    cornerLinks(root);
     fit(list, [].slice.call(list.querySelectorAll('.cw-ps-block')));
     if (flyer) outer.appendChild(el('div', 'cw-ps-slot')).appendChild(sheet.cloneNode(true));
     fitScreen(outer);
